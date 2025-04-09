@@ -70,8 +70,8 @@ window:AddButton({
     end
 })
 
-
-
+window:AddLabel({ text = "Credits:  Kzu123", type = "label" })
+library:Init()
 
 -- Đặt dòng này ở nơi bạn muốn nút "hiện" trong menu
 local forceViewButton -- Biến giữ nút, chưa tạo ngay
@@ -81,7 +81,7 @@ local forceViewButton -- Biến giữ nút, chưa tạo ngay
 -- Đặt dòng này ở CUỐI FILE để không lỗi callback
 task.delay(0, function()
     forceViewButton = window:AddButton({
-        text = "Unlock Cammera",
+        text = "Force Third-Person View",
         callback = function()
             pcall(function()
                 local camera = workspace.CurrentCamera
@@ -94,7 +94,3 @@ task.delay(0, function()
         end
     })
 end)
-
-
-window:AddLabel({ text = "Credits:  Kzu123", type = "label" })
-library:Init()
