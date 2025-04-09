@@ -34,7 +34,7 @@ end
 local window = library:CreateWindow("Dead-Rails [Free]")
 
 window:AddButton({
-    text = "Bypass To End",
+    text = "TP To End",
     callback = function()
         sendNotification("Spam Button If Not Teleported", "Keep clicking if teleport fails", 4)
         wait(1)
@@ -43,31 +43,15 @@ window:AddButton({
 })
 
 local noclipEnabled = false
-
-local function toggleNoclipAndCam()
+local function toggleNoclip()
     noclipEnabled = not noclipEnabled
-
-    -- Cập nhật trạng thái xuyên tường
     for _, part in pairs(player.Character:GetDescendants()) do
         if part:IsA("BasePart") then
             part.CanCollide = not noclipEnabled
         end
     end
-
-    -- Unlock góc nhìn nếu bật NoClip
-    if noclipEnabled then
-        pcall(function()
-            local camera = workspace.CurrentCamera
-            player.CameraMode = Enum.CameraMode.Classic
-            camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
-            camera.CameraType = Enum.CameraType.Custom
-        end)
-    end
-
-    sendNotification("NoClip + Cam", (noclipEnabled and "Enabled" or "Disabled"), 4)
 end
 
--- Giữ xuyên tường liên tục nếu bật
 RunService.Stepped:Connect(function()
     if noclipEnabled and player.Character then
         for _, part in pairs(player.Character:GetDescendants()) do
@@ -78,10 +62,12 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- Nút gộp
 window:AddButton({
-    text = "NoClip + Unlock Cam",
-    callback = toggleNoclipAndCam
+    text = "NoClip",
+    callback = function()
+        toggleNoclip()
+        sendNotification("NoClip Status", "NoClip is now " .. (noclipEnabled and "Enabled" or "Disabled"), 4)
+    end
 })
 
 window:AddLabel({ text = "Credits:  Kzu123 ", type = "label" })
