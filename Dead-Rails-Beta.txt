@@ -73,24 +73,15 @@ window:AddButton({
 window:AddLabel({ text = "Credits:  Kzu123", type = "label" })
 library:Init()
 
--- Đặt dòng này ở nơi bạn muốn nút "hiện" trong menu
-local forceViewButton -- Biến giữ nút, chưa tạo ngay
-
--- (Các nút khác ở đây...)
-
--- Đặt dòng này ở CUỐI FILE để không lỗi callback
-task.delay(0, function()
-    forceViewButton = window:AddButton({
-        text = "Force Third-Person View",
-        callback = function()
-            pcall(function()
-                local camera = workspace.CurrentCamera
-                local player = game:GetService("Players").LocalPlayer
-
-                player.CameraMode = Enum.CameraMode.Classic
-                camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
-                camera.CameraType = Enum.CameraType.Custom
-            end)
-        end
-    })
-end)
+-- Sau Init mới được thêm nút này!
+window:AddButton({
+    text = "Unlock Camera",
+    callback = function()
+        pcall(function()
+            local camera = workspace.CurrentCamera
+            player.CameraMode = Enum.CameraMode.Classic
+            camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
+            camera.CameraType = Enum.CameraType.Custom
+        end)
+    end
+})
