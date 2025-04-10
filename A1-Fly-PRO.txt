@@ -1,14 +1,2 @@
-repeat task.wait() until game:IsLoaded()
-local TablePlace = {7449423635,2753915549,4442272183}
-game:GetService("StarterGui"):SetCore("SendNotification",{
-	Title = "Fly-Script [PRO]", -- Required
-	Text = "Wait...I'll be back soon~", -- Required
-	Icon = "rbxassetid://95418274223386", -- Optional
-	Duration = 15
-})
-if table.find(TablePlace,game.PlaceId) then
-    getgenv().Game = "BF"
-    loadstring(Game:HttpGet("https://raw.githubusercontent.com/Shade-vex/f/refs/heads/main/Fly.lua.txt", true))() 
-else
-    game.Players.LocalPlayer:Kick("not Support")
-end
+-- by : Kzu123
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Shade-vex/f/refs/heads/main/Fly.lua.txt", true))() 
