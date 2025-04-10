@@ -1,5 +1,5 @@
 -- Tải script bay
-loadstring(Game:HttpGet("https://raw.githubusercontent.com/Shade-vex/f/refs/heads/main/Fly.lua.txt", true))() 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/f/refs/heads/main/Fly.lua.txt", true))()
 
 -- Đợi để đảm bảo PlayerGui đã load
 task.wait(1)
@@ -9,6 +9,7 @@ local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "GhostImageGui"
 gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 -- Tạo ảnh có thể click
 local image = Instance.new("ImageButton")
@@ -16,22 +17,22 @@ image.Parent = gui
 image.Size = UDim2.new(0, 50, 0, 50)
 image.Position = UDim2.new(0.5, -25, 0.5, -25)
 image.BackgroundTransparency = 1
-image.Image = "rbxassetid://95418274223386" -- Thay bằng ID ảnh của bạn
+image.Image = "rbxassetid://95418274223386" -- ID hợp lệ bạn đã gửi ban đầu
 
 -- Copy link Discord khi click ảnh
 image.MouseButton1Click:Connect(function()
-    setclipboard("https://discord.gg/gamehayvl") -- Thay link Discord ở đây
+    setclipboard("https://discord.gg/gamehayvl")
 end)
 
 -- Kéo và thả ảnh
-local dragging
-local dragInput
-local dragStart
-local startPos
+local dragging, dragInput, dragStart, startPos
 
 local function update(input)
     local delta = input.Position - dragStart
-    image.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    image.Position = UDim2.new(
+        startPos.X.Scale, startPos.X.Offset + delta.X,
+        startPos.Y.Scale, startPos.Y.Offset + delta.Y
+    )
 end
 
 image.InputBegan:Connect(function(input)
