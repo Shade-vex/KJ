@@ -1,5 +1,5 @@
 -- Tải script bay
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/f/refs/heads/main/Fly%5BVIP%5D.txt"))()
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Shade-vex/f/refs/heads/main/Fly.lua.txt", true))() 
 
 -- Đợi để đảm bảo PlayerGui đã load
 task.wait(1)
