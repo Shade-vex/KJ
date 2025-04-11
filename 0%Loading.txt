@@ -1,64 +1,76 @@
-local UserInputService = game:GetService("UserInputService")
+-- Tạo GUI
+local player = game.Players.LocalPlayer
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "CatMemeGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Tạo ảnh logo
-local logo = Instance.new("ImageButton")
-logo.Image = "http://www.roblox.com/asset/?id=113684414634355" -- Ảnh khi tắt
-logo.Size = UDim2.new(0, 50, 0, 50)
-logo.Position = UDim2.new(0, 100, 0, 100)
-logo.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-logo.BorderSizePixel = 0
-logo.AutoButtonColor = false
-logo.Name = "ToggleLogo"
-logo.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui") -- thay ScreenGui nếu cần
+-- Giao diện chính có thể ẩn/hiện
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = true
 
--- Bo góc
-local corner = Instance.new("UICorner", logo)
-corner.CornerRadius = UDim.new(0, 10)
+-- Nút bật/tắt
+local ToggleBtn = Instance.new("ImageButton", ScreenGui)
+ToggleBtn.Name = "MinimizeButton"
+ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
 
--- Kéo thả
-local dragging, dragInput, dragStart, startPos
+local UICorner = Instance.new("UICorner", ToggleBtn)
+UICorner.CornerRadius = UDim.new(1, 0)
 
-logo.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = logo.Position
-
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
+-- Logic bật/tắt
+local isVisible = true
+ToggleBtn.MouseButton1Click:Connect(function()
+    isVisible = not isVisible
+    MainFrame.Visible = isVisible
+    if isVisible then
+        ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
+    else
+        ToggleBtn.Image = "rbxassetid://95707652466584"
+    end
 end)
 
-logo.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
-		dragInput = input
-	end
+-- Kéo và thả nút Toggle
+local dragging = false
+local dragStart, startPos, dragInput
+
+local function update(input)
+    local delta = input.Position - dragStart
+    ToggleBtn.Position = UDim2.new(
+        startPos.X.Scale, startPos.X.Offset + delta.X,
+        startPos.Y.Scale, startPos.Y.Offset + delta.Y
+    )
+end
+
+ToggleBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = ToggleBtn.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		local delta = input.Position - dragStart
-		logo.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
-	end
+ToggleBtn.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
 end)
 
--- Bật tắt & đổi ảnh
-local isToggled = false
-local offImage = "http://www.roblox.com/asset/?id=113684414634355"
-local onImage = "http://www.roblox.com/asset/?id=95707652466584"
-
-logo.MouseButton1Click:Connect(function()
-	isToggled = not isToggled
-	logo.Image = isToggled and onImage or offImage
-
-	-- Nếu muốn làm gì khi bật/tắt, thêm vào đây
-	print("Trạng thái hiện tại:", isToggled and "Bật" or "Tắt")
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
 end)
