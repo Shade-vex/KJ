@@ -1,11 +1,7 @@
--- Tạo GUI
-local player = game.Players.LocalPlayer
-local ScreenGui = Instance.new("ScreenGui")
+--// UI và Toggle Button
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "CatMemeGUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Giao diện chính có thể ẩn/hiện
 local MainFrame = Instance.new("Frame", ScreenGui)
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
 MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
@@ -14,7 +10,17 @@ MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Visible = true
 
--- Nút bật/tắt
+-- Tiêu đề
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Loading Cat V1"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 22
+
+-- Toggle Button
 local ToggleBtn = Instance.new("ImageButton", ScreenGui)
 ToggleBtn.Name = "MinimizeButton"
 ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
@@ -22,55 +28,20 @@ ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
 
+-- Bo góc
 local UICorner = Instance.new("UICorner", ToggleBtn)
 UICorner.CornerRadius = UDim.new(1, 0)
 
--- Logic bật/tắt
+-- Âm thanh loading
+local sound = Instance.new("Sound", ToggleBtn)
+sound.SoundId = "rbxassetid://9118823107" -- âm thanh loading nhẹ
+sound.Volume = 1
+sound.Name = "LoadingSound"
+
+-- Logic bật tắt
 local isVisible = true
 ToggleBtn.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    MainFrame.Visible = isVisible
-    if isVisible then
-        ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
-    else
-        ToggleBtn.Image = "rbxassetid://95707652466584"
-    end
-end)
-
--- Kéo và thả nút Toggle
-local dragging = false
-local dragStart, startPos, dragInput
-
-local function update(input)
-    local delta = input.Position - dragStart
-    ToggleBtn.Position = UDim2.new(
-        startPos.X.Scale, startPos.X.Offset + delta.X,
-        startPos.Y.Scale, startPos.Y.Offset + delta.Y
-    )
-end
-
-ToggleBtn.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = ToggleBtn.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-ToggleBtn.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
+	isVisible = not isVisible
+	MainFrame.Visible = isVisible
+	sound:Play()
 end)
