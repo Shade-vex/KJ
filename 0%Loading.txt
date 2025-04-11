@@ -1,29 +1,64 @@
---// UI và Toggle Button
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "CatMemeGUI"
+local UserInputService = game:GetService("UserInputService")
 
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 400, 0, 300)
-MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Active = true
-MainFrame.Draggable = true -- Cho phép kéo thả
-
---// Toggle Button
-local ToggleBtn = Instance.new("ImageButton", ScreenGui)
-ToggleBtn.Name = "MinimizeButton"
-ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
-ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
+-- Tạo ảnh logo
+local logo = Instance.new("ImageButton")
+logo.Image = "http://www.roblox.com/asset/?id=113684414634355" -- Ảnh khi tắt
+logo.Size = UDim2.new(0, 50, 0, 50)
+logo.Position = UDim2.new(0, 100, 0, 100)
+logo.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+logo.BorderSizePixel = 0
+logo.AutoButtonColor = false
+logo.Name = "ToggleLogo"
+logo.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui") -- thay ScreenGui nếu cần
 
 -- Bo góc
-local UICorner = Instance.new("UICorner", ToggleBtn)
-UICorner.CornerRadius = UDim.new(1, 0)
+local corner = Instance.new("UICorner", logo)
+corner.CornerRadius = UDim.new(0, 10)
 
--- Toggle logic
-local isVisible = true
-ToggleBtn.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    MainFrame.Visible = isVisible
+-- Kéo thả
+local dragging, dragInput, dragStart, startPos
+
+logo.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = logo.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+logo.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		logo.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+-- Bật tắt & đổi ảnh
+local isToggled = false
+local offImage = "http://www.roblox.com/asset/?id=113684414634355"
+local onImage = "http://www.roblox.com/asset/?id=95707652466584"
+
+logo.MouseButton1Click:Connect(function()
+	isToggled = not isToggled
+	logo.Image = isToggled and onImage or offImage
+
+	-- Nếu muốn làm gì khi bật/tắt, thêm vào đây
+	print("Trạng thái hiện tại:", isToggled and "Bật" or "Tắt")
 end)
