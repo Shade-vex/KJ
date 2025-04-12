@@ -3,6 +3,22 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
+-- Thời gian hiệu lực key (giây)
+local KEY_VALID_TIME = 86400 -- 24 giờ
+
+-- Key đúng
+local correctKey = "Free|Loading|1asld89kso"
+
+-- Kiểm tra xem đã lưu key và thời gian chưa
+local lastKeyTime = player:GetAttribute("LastKeyTime")
+
+if lastKeyTime and tick() - lastKeyTime <= KEY_VALID_TIME then
+    -- Nếu chưa hết 24h => chạy luôn script
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%25Loading.txt"))()
+    return
+end
+
+-- Hiện GUI nếu chưa nhập key hoặc key hết hạn
 local ScreenGui = Instance.new("ScreenGui", PlayerGui)
 ScreenGui.Name = "GetKeyUI"
 ScreenGui.ResetOnSpawn = false
@@ -22,7 +38,7 @@ UICorner.CornerRadius = UDim.new(0, 10)
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.BackgroundTransparency = 1
-Title.Text = "Loading Cat V1|Key System"
+Title.Text = "Loading Cat V1 | Key System"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 18
@@ -36,7 +52,6 @@ GetKeyButton.Font = Enum.Font.Gotham
 GetKeyButton.TextSize = 14
 GetKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 GetKeyButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-
 Instance.new("UICorner", GetKeyButton).CornerRadius = UDim.new(0, 6)
 
 -- Input Key
@@ -49,7 +64,6 @@ KeyBox.Font = Enum.Font.Gotham
 KeyBox.TextSize = 14
 KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 KeyBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-
 Instance.new("UICorner", KeyBox).CornerRadius = UDim.new(0, 6)
 
 -- Nút kiểm tra key
@@ -61,18 +75,16 @@ CheckKeyButton.Font = Enum.Font.Gotham
 CheckKeyButton.TextSize = 14
 CheckKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CheckKeyButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-
 Instance.new("UICorner", CheckKeyButton).CornerRadius = UDim.new(0, 6)
 
--- Logic
-local correctKey = "Free|Loading1"
-
+-- Button actions
 GetKeyButton.MouseButton1Click:Connect(function()
-	setclipboard("https://your-getkey-link.com") -- Dán link get key thật vào đây
+	setclipboard("https://scwz.me/5j4Rr1") -- Dán link thật vào đây
 end)
 
 CheckKeyButton.MouseButton1Click:Connect(function()
 	if KeyBox.Text == correctKey then
+		player:SetAttribute("LastKeyTime", tick())
 		ScreenGui:Destroy()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%25Loading.txt"))()
 	else
