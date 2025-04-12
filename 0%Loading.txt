@@ -38,10 +38,62 @@ sound.SoundId = "rbxassetid://9118823107" -- âm thanh loading nhẹ
 sound.Volume = 1
 sound.Name = "LoadingSound"
 
--- Logic bật tắt
+-- Logic bật tắt GUI
 local isVisible = true
 ToggleBtn.MouseButton1Click:Connect(function()
 	isVisible = not isVisible
 	MainFrame.Visible = isVisible
 	sound:Play()
+end)
+
+--===[ CHỨC NĂNG Noclip ]===--
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local noclipEnabled = false
+local noclipConnection
+
+local function ToggleNoclip(state)
+	noclipEnabled = state
+
+	if noclipEnabled then
+		if noclipConnection then
+			noclipConnection:Disconnect()
+		end
+		noclipConnection = RunService.Stepped:Connect(function()
+			if LocalPlayer.Character then
+				for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+					if part:IsA("BasePart") then
+						part.CanCollide = false
+					end
+				end
+			end
+		end)
+	else
+		if noclipConnection then
+			noclipConnection:Disconnect()
+			noclipConnection = nil
+		end
+	end
+end
+
+-- Nút noclip trong GUI
+local NoclipButton = Instance.new("TextButton", MainFrame)
+NoclipButton.Size = UDim2.new(0, 200, 0, 40)
+NoclipButton.Position = UDim2.new(0.5, -100, 0, 60)
+NoclipButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+NoclipButton.TextColor3 = Color3.new(1, 1, 1)
+NoclipButton.Font = Enum.Font.Gotham
+NoclipButton.TextSize = 16
+NoclipButton.Text = "Noclip"
+
+local corner = Instance.new("UICorner", NoclipButton)
+corner.CornerRadius = UDim.new(0, 8)
+
+NoclipButton.MouseButton1Click:Connect(function()
+	noclipEnabled = not noclipEnabled
+	ToggleNoclip(noclipEnabled)
+	NoclipButton.Text = noclipEnabled and "Tắt Noclip" or "Bật Noclip"
 end)
