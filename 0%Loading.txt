@@ -142,7 +142,7 @@ end)
 -- Nút bật/tắt tọa độ
 local CoordToggleBtn = Instance.new("TextButton", MainFrame)
 CoordToggleBtn.Size = UDim2.new(0.7, 0, 0, 40)  -- Kích thước nút giống Noclip
-CoordToggleBtn.Position = UDim2.new(0.15, 0, 0.5, 60)  -- Vị trí dưới nút Noclip
+CoordToggleBtn.Position = UDim2.new(0.15, 0, 0.5, 20)  -- Vị trí dưới nút Noclip
 CoordToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 CoordToggleBtn.Text = "Bật Tọa Độ"
 CoordToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
