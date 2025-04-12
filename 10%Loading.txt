@@ -1,0 +1,81 @@
+-- GUI Get Key
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui", PlayerGui)
+ScreenGui.Name = "GetKeyUI"
+ScreenGui.ResetOnSpawn = false
+
+-- Frame chính
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 300, 0, 180)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 10)
+
+-- Tiêu đề
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "Loading Cat V1|Key System"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 18
+
+-- Nút lấy key
+local GetKeyButton = Instance.new("TextButton", MainFrame)
+GetKeyButton.Size = UDim2.new(0, 260, 0, 30)
+GetKeyButton.Position = UDim2.new(0.5, -130, 0, 40)
+GetKeyButton.Text = "Lấy key tại đây"
+GetKeyButton.Font = Enum.Font.Gotham
+GetKeyButton.TextSize = 14
+GetKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+GetKeyButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+
+Instance.new("UICorner", GetKeyButton).CornerRadius = UDim.new(0, 6)
+
+-- Input Key
+local KeyBox = Instance.new("TextBox", MainFrame)
+KeyBox.Size = UDim2.new(0, 260, 0, 30)
+KeyBox.Position = UDim2.new(0.5, -130, 0, 80)
+KeyBox.PlaceholderText = "Nhập key..."
+KeyBox.Text = ""
+KeyBox.Font = Enum.Font.Gotham
+KeyBox.TextSize = 14
+KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+Instance.new("UICorner", KeyBox).CornerRadius = UDim.new(0, 6)
+
+-- Nút kiểm tra key
+local CheckKeyButton = Instance.new("TextButton", MainFrame)
+CheckKeyButton.Size = UDim2.new(0, 260, 0, 30)
+CheckKeyButton.Position = UDim2.new(0.5, -130, 0, 120)
+CheckKeyButton.Text = "Xác nhận key"
+CheckKeyButton.Font = Enum.Font.Gotham
+CheckKeyButton.TextSize = 14
+CheckKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheckKeyButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+Instance.new("UICorner", CheckKeyButton).CornerRadius = UDim.new(0, 6)
+
+-- Logic
+local correctKey = "Free|Loading1"
+
+GetKeyButton.MouseButton1Click:Connect(function()
+	setclipboard("https://your-getkey-link.com") -- Dán link get key thật vào đây
+end)
+
+CheckKeyButton.MouseButton1Click:Connect(function()
+	if KeyBox.Text == correctKey then
+		ScreenGui:Destroy()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%25Loading.txt"))()
+	else
+		KeyBox.Text = "Key không đúng!"
+	end
+end)
