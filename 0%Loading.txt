@@ -3,7 +3,7 @@ local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "CatMemeGUI"
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 250, 0, 300) -- chỉnh kích cỡ gui 
+MainFrame.Size = UDim2.new(0, 250, 0, 200) -- chỉnh kích cỡ gui 
 MainFrame.Position = UDim2.new(0.5, -125, 0.5, -65)
 MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.Active = true
