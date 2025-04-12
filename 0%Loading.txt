@@ -93,3 +93,65 @@ NoclipButton.MouseButton1Click:Connect(function()
     ToggleNoclip(noclipEnabled)
     NoclipButton.Text = noclipEnabled and "Tắt Noclip" or "Bật Noclip"
 end)
+
+
+
+
+
+
+
+
+
+-- Tạo GUI hiển thị tọa độ
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local coordGui = Instance.new("ScreenGui")
+coordGui.Name = "CoordDisplay"
+coordGui.Parent = player:WaitForChild("PlayerGui")
+coordGui.Enabled = false
+
+local label = Instance.new("TextLabel", coordGui)
+label.Size = UDim2.new(0, 300, 0, 50)
+label.Position = UDim2.new(0, 10, 0, 10)
+label.BackgroundTransparency = 0.3
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSansBold
+label.Text = "Tọa độ: Đang tải..."
+
+-- Cập nhật tọa độ mỗi frame
+RunService.RenderStepped:Connect(function()
+    if coordGui.Enabled then
+        local char = player.Character or player.CharacterAdded:Wait()
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local pos = hrp.Position
+            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
+        end
+    end
+end)
+
+-- Đảm bảo khi respawn vẫn giữ GUI
+player.CharacterAdded:Connect(function()
+    coordGui.Parent = player:WaitForChild("PlayerGui")
+end)
+
+-- Nút bật/tắt trong GUI
+local CoordToggleBtn = Instance.new("TextButton", MainFrame)
+CoordToggleBtn.Size = UDim2.new(0, 200, 0, 40)
+CoordToggleBtn.Position = UDim2.new(0.5, -100, 0.6, 0)
+CoordToggleBtn.Text = "Bật Tọa Độ"
+CoordToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+CoordToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CoordToggleBtn.Font = Enum.Font.Gotham
+CoordToggleBtn.TextSize = 18
+
+local isCoordVisible = false
+CoordToggleBtn.MouseButton1Click:Connect(function()
+    isCoordVisible = not isCoordVisible
+    coordGui.Enabled = isCoordVisible
+    CoordToggleBtn.Text = isCoordVisible and "Tắt Tọa Độ" or "Bật Tọa Độ"
+end)
