@@ -7,7 +7,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
          Animation = "Script by Kzu123"
          },
         Key = {
-        KeySystem = true,
+        KeySystem = false,
         Title = "Loading Cat V2",
         Description = "Script by Kzu123",
         KeyLink = "https://discord.gg/DmN8sE7Y",
@@ -31,9 +31,9 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
       })
       
 ------ Tab
-     local Tab1o = MakeTab({Name = "🔮Discord"})
-     local Tab2o = MakeTab({Name = "🔰Main Script"})
-
+     local Tab1o = MakeTab({Name = "Discord"})
+     local Tab2o = MakeTab({Name = "Main Script"})
+     local Tab3o = MakeTab({Name = "Setting"})
 
 ----- Discord
 
@@ -63,13 +63,49 @@ AddButton(Tab1o, {
 
 
 
-   Section = AddSection(Tab1o, {"Chức năng Script "})
-   Section = AddSection(Tab1o, {"• Bypass Anti-cheat"})
-   Section = AddSection(Tab1o, {"• Chặn lệnh banned"})
+
 
 
 
    Section = AddSection(Tab2o, {"Script [PRO]"})
+
+
+
+AddButton(Tab2o, {
+	Name = "Teleport to End [PRO]",
+	Callback = function()
+		local function teleportWithSeat(position)
+			local Players = game:GetService("Players")
+			local player = Players.LocalPlayer
+			local char = player.Character or player.CharacterAdded:Wait()
+
+			if workspace:FindFirstChild("TempSeat") then
+				workspace.TempSeat:Destroy()
+			end
+
+			local seat = Instance.new("Seat")
+			seat.Name = "TempSeat"
+			seat.Anchored = true
+			seat.CanCollide = false
+			seat.Transparency = 1
+			seat.Size = Vector3.new(2, 1, 2)
+			seat.CFrame = CFrame.new(position)
+			seat.Parent = workspace
+
+			local hrp = char:WaitForChild("HumanoidRootPart")
+			local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+
+			if humanoid and seat then
+				hrp.CFrame = seat.CFrame + Vector3.new(0, 2, 0)
+				task.wait(0.1)
+				seat:Sit(humanoid)
+			end
+		end
+
+		local targetPosition = Vector3.new(-346, -69, -49060)
+		teleportWithSeat(targetPosition)
+	end
+})
 
 
 
@@ -146,7 +182,7 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 AddButton(Tab2o, {
-    Name = "Bật Tọa Độ",
+    Name = "Coordinates [PRO]",
     Callback = function()
         isCoordVisible = not isCoordVisible
         coordGui.Enabled = isCoordVisible
@@ -156,5 +192,8 @@ AddButton(Tab2o, {
 
 
 
+   Section = AddSection(Tab3o, {"Chức năng Script "})
+   Section = AddSection(Tab3o, {"• Bypass Anti-cheat"})
+   Section = AddSection(Tab3o, {"• Chặn lệnh banned"})
 
 
