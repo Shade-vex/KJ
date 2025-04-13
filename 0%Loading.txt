@@ -69,10 +69,15 @@ AddButton(Tab1o, {
 
    Section = AddSection(Tab2o, {"Script [PRO]"})
 
-
+       AddButton(Tab2o, {
+     Name = "Bypass Anti-cheat [PRO]",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/bypass%20anti%20cheat.txt"))()
+  end
+  })
 
 AddButton(Tab2o, {
-	Name = "Teleport to End [PRO]",
+	Name = "Teleport to End [FREE]",
 	Callback = function()
 		local function teleportWithSeat(position)
 			local Players = game:GetService("Players")
@@ -127,6 +132,15 @@ AddButton(Tab2o, {
 		end
 	end
 })
+
+
+
+       AddButton(Tab2o, {
+     Name = "Teleport to End [PRO]",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
+  end
+  })
 
 
 
@@ -211,6 +225,78 @@ AddButton(Tab2o, {
     end
 })
 
+
+local Player = game.Players.LocalPlayer
+local Gui = Player:WaitForChild("PlayerGui")
+
+-- Tạo GUI thông báo bị banned
+local function showBannedMessage()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = Gui
+    screenGui.Name = "BannedGui"
+    
+    local frame = Instance.new("Frame")
+    frame.Parent = screenGui
+    frame.Size = UDim2.new(0.5, 0, 0.3, 0)
+    frame.Position = UDim2.new(0.25, 0, 0.35, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Màu nền là màu đen thay vì đỏ
+    frame.BorderSizePixel = 0
+    
+    local label = Instance.new("TextLabel")
+    label.Parent = frame
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Text = "HAHA NOOB"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Màu chữ trắng
+    label.TextScaled = true
+    label.BackgroundTransparency = 1
+    
+    -- Kết thúc trò chơi sau khi hiển thị thông báo
+    wait(0.1) -- Chờ 0.1 giây
+    Player:Kick("You have been banned for cheating.")
+end
+
+-- Thực hiện fake ban khi người chơi nhập lệnh hoặc sự kiện nào đó
+AddButton(Tab2o, {
+    Name = "Kill aura [PRO]",
+    Callback = function()
+        showBannedMessage()
+    end
+})        
+
+
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local PlaceId = game.PlaceId
+
+local function switchServer()
+    local success, servers = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
+    end)
+
+    if success and servers and servers.data then
+        for _, server in pairs(servers.data) do
+            if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                TeleportService:TeleportToPlaceInstance(PlaceId, server.id, game.Players.LocalPlayer)
+                return
+            end
+        end
+    end
+end
+
+-- Đảm bảo Tab2o tồn tại
+if not Tab2o then
+    Tab2o = AddTab("Server")
+end
+
+-- Tạo nút đổi server
+AddButton(
+    Tab2o,
+    {
+        Name = "Change server [PRO]",
+        Callback = function()
+            switchServer()
+        end
+    })
 
 
    Section = AddSection(Tab3o, {"Chức năng Script "})
