@@ -27,7 +27,7 @@ ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
 ToggleBtn.Active = true
-ToggleBtn.Draggable = true -- Cho phép kéo nút toggle
+ToggleBtn.Draggable = true
 
 -- Bo góc nút
 local UICorner = Instance.new("UICorner", ToggleBtn)
@@ -36,8 +36,8 @@ UICorner.CornerRadius = UDim.new(1, 0)
 -- Toggle logic
 local isVisible = true
 ToggleBtn.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    MainFrame.Visible = isVisible
+	isVisible = not isVisible
+	MainFrame.Visible = isVisible
 end)
 
 --// Nút hiển thị thời gian server uptime
@@ -53,46 +53,37 @@ UptimeBtn.TextSize = 16
 local UICornerBtn = Instance.new("UICorner", UptimeBtn)
 UICornerBtn.CornerRadius = UDim.new(0, 8)
 
---// Uptime GUI hiển thị bên ngoài
-local player = game.Players.LocalPlayer
-local uptimeGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-uptimeGui.Name = "ServerUptimeDisplay"
-uptimeGui.Enabled = false
+-- Label hiển thị thời gian server
+local TimeLabel = Instance.new("TextLabel", MainFrame)
+TimeLabel.Size = UDim2.new(0, 250, 0, 40)
+TimeLabel.Position = UDim2.new(0, 10, 0, 100)
+TimeLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TimeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TimeLabel.Text = "Server Uptime: Loading..."
+TimeLabel.TextScaled = true
+TimeLabel.Font = Enum.Font.SourceSansBold
+TimeLabel.Visible = false
 
-local label = Instance.new("TextLabel", uptimeGui)
-label.Size = UDim2.new(0, 250, 0, 50)
-label.Position = UDim2.new(0, 10, 0, 70)
-label.BackgroundTransparency = 0.3
-label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-label.TextColor3 = Color3.fromRGB(255, 255, 255)
-label.TextScaled = true
-label.Font = Enum.Font.SourceSansBold
-label.Text = "Server Uptime: Loading..."
+local UICornerTime = Instance.new("UICorner", TimeLabel)
+UICornerTime.CornerRadius = UDim.new(0, 8)
 
--- Bắt đầu tính thời gian từ khi script chạy
-local serverStart = tick()
+-- Cập nhật thời gian server thật sự
 local RunService = game:GetService("RunService")
-
--- Cập nhật thời gian liên tục
 RunService.RenderStepped:Connect(function()
-    if uptimeGui.Enabled then
-        local elapsed = tick() - serverStart
-        local hours = math.floor(elapsed / 3600)
-        local minutes = math.floor((elapsed % 3600) / 60)
-        local seconds = math.floor(elapsed % 60)
+	if TimeLabel.Visible then
+		local elapsed = workspace.DistributedGameTime -- thời gian server thật
+		local hours = math.floor(elapsed / 3600)
+		local minutes = math.floor((elapsed % 3600) / 60)
+		local seconds = math.floor(elapsed % 60)
 
-        label.Text = string.format("Server Uptime: %02d:%02d:%02d", hours, minutes, seconds)
-    end
+		TimeLabel.Text = string.format("Server Uptime: %02d:%02d:%02d", hours, minutes, seconds)
+	end
 end)
 
--- Toggle bật/tắt hiển thị
+-- Toggle thời gian
 local toggleUptime = false
 UptimeBtn.MouseButton1Click:Connect(function()
-    toggleUptime = not toggleUptime
-    uptimeGui.Enabled = toggleUptime
-    if toggleUptime then
-        UptimeBtn.Text = "Tắt thời gian server"
-    else
-        UptimeBtn.Text = "Bật thời gian server"
-    end
+	toggleUptime = not toggleUptime
+	TimeLabel.Visible = toggleUptime
+	UptimeBtn.Text = toggleUptime and "Tắt thời gian server" or "Bật thời gian server"
 end)
