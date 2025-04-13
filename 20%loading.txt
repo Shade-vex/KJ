@@ -1,0 +1,98 @@
+--// UI và Toggle Button
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "CatMemeGUI"
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Active = true
+MainFrame.Draggable = true -- Cho phép kéo thả
+
+-- Tiêu đề
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Loading Cat V1"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 22
+
+--// Toggle Button (Hiện/ẩn GUI)
+local ToggleBtn = Instance.new("ImageButton", ScreenGui)
+ToggleBtn.Name = "MinimizeButton"
+ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true -- Cho phép kéo nút toggle
+
+-- Bo góc nút
+local UICorner = Instance.new("UICorner", ToggleBtn)
+UICorner.CornerRadius = UDim.new(1, 0)
+
+-- Toggle logic
+local isVisible = true
+ToggleBtn.MouseButton1Click:Connect(function()
+    isVisible = not isVisible
+    MainFrame.Visible = isVisible
+end)
+
+--// Nút hiển thị thời gian server uptime
+local UptimeBtn = Instance.new("TextButton", MainFrame)
+UptimeBtn.Size = UDim2.new(0, 180, 0, 40)
+UptimeBtn.Position = UDim2.new(0, 10, 0, 50)
+UptimeBtn.Text = "Bật thời gian server"
+UptimeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+UptimeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+UptimeBtn.Font = Enum.Font.GothamBold
+UptimeBtn.TextSize = 16
+
+local UICornerBtn = Instance.new("UICorner", UptimeBtn)
+UICornerBtn.CornerRadius = UDim.new(0, 8)
+
+--// Uptime GUI hiển thị bên ngoài
+local player = game.Players.LocalPlayer
+local uptimeGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+uptimeGui.Name = "ServerUptimeDisplay"
+uptimeGui.Enabled = false
+
+local label = Instance.new("TextLabel", uptimeGui)
+label.Size = UDim2.new(0, 250, 0, 50)
+label.Position = UDim2.new(0, 10, 0, 70)
+label.BackgroundTransparency = 0.3
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSansBold
+label.Text = "Server Uptime: Loading..."
+
+-- Bắt đầu tính thời gian từ khi script chạy
+local serverStart = tick()
+local RunService = game:GetService("RunService")
+
+-- Cập nhật thời gian liên tục
+RunService.RenderStepped:Connect(function()
+    if uptimeGui.Enabled then
+        local elapsed = tick() - serverStart
+        local hours = math.floor(elapsed / 3600)
+        local minutes = math.floor((elapsed % 3600) / 60)
+        local seconds = math.floor(elapsed % 60)
+
+        label.Text = string.format("Server Uptime: %02d:%02d:%02d", hours, minutes, seconds)
+    end
+end)
+
+-- Toggle bật/tắt hiển thị
+local toggleUptime = false
+UptimeBtn.MouseButton1Click:Connect(function()
+    toggleUptime = not toggleUptime
+    uptimeGui.Enabled = toggleUptime
+    if toggleUptime then
+        UptimeBtn.Text = "Tắt thời gian server"
+    else
+        UptimeBtn.Text = "Bật thời gian server"
+    end
+end)
