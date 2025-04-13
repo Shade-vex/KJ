@@ -80,7 +80,79 @@ AddButton(Tab1o, {
   end
   })   
 
+--// Biến cần dùng
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local noclipEnabled = false
+local noclipConnection
+local isCoordVisible = false
 
+--// Nút Bật Noclip
+AddButton(Tab2o, {
+    Name = "Noclip [PRO]",
+    Callback = function()
+        noclipEnabled = not noclipEnabled
+        if noclipEnabled then
+            if noclipConnection then noclipConnection:Disconnect() end
+            noclipConnection = RunService.Stepped:Connect(function()
+                if LocalPlayer.Character then
+                    for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end)
+            Notify("Noclip", "Đã bật noclip.")
+        else
+            if noclipConnection then
+                noclipConnection:Disconnect()
+                noclipConnection = nil
+            end
+            Notify("Noclip", "Đã tắt noclip.")
+        end
+    end
+})
+
+--// Nút Bật Tọa Độ
+local coordGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+coordGui.Name = "CoordDisplay"
+coordGui.Enabled = false
+
+local label = Instance.new("TextLabel", coordGui)
+label.Size = UDim2.new(0, 300, 0, 50)
+label.Position = UDim2.new(0, 10, 0, 10)
+label.BackgroundTransparency = 0.3
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSansBold
+label.Text = "Tọa độ: Đang tải..."
+
+RunService.RenderStepped:Connect(function()
+    if coordGui.Enabled then
+        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local pos = hrp.Position
+            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
+        end
+    end
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    coordGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end)
+
+AddButton(Tab2o, {
+    Name = "Bật Tọa Độ",
+    Callback = function()
+        isCoordVisible = not isCoordVisible
+        coordGui.Enabled = isCoordVisible
+        Notify("Toạ độ", isCoordVisible and "Đã bật hiển thị tọa độ." or "Đã tắt hiển thị tọa độ.")
+    end
+})
 
 
 
