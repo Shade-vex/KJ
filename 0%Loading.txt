@@ -70,7 +70,7 @@ AddButton(Tab1o, {
    Section = AddSection(Tab2o, {"Script [PRO]"})
 
        AddButton(Tab2o, {
-     Name = "Bypass Anti-cheat [PRO]",
+     Name = "Bypass Anti-cheat",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/bypass%20anti%20cheat.txt"))()
   end
@@ -142,10 +142,59 @@ AddButton(Tab2o, {
   end
   })
 
+local Radius = 50 -- bán kính nhặt đồ (50m)
+local Debounce = false
 
+-- Danh sách tên các vật phẩm cần nhặt
+local TargetNames = {
+    ["Ammo"] = true,
+    ["Bond"] = true
+}
+
+-- Hàm kiểm tra khoảng cách
+local function isInRadius(part, root)
+    return (part.Position - root.Position).Magnitude <= Radius
+end
+
+-- Hàm thực hiện nhặt
+local function AutoPickup()
+    if Debounce then return end
+    Debounce = true
+
+    local plr = game:GetService("Players").LocalPlayer
+    local char = plr.Character
+    if not (char and char:FindFirstChild("HumanoidRootPart")) then
+        Debounce = false
+        return
+    end
+    local root = char.HumanoidRootPart
+
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("TouchTransmitter") and v.Parent and TargetNames[v.Parent.Name] then
+            local itemPart = v.Parent
+            if isInRadius(itemPart, root) then
+                firetouchinterest(root, itemPart, 0)
+                firetouchinterest(root, itemPart, 1)
+            end
+        end
+    end
+
+    Debounce = false
+end
+
+-- Tạo nút bật trong Tab2o
+AddButton(Tab2o, {
+    Name = "Auto Item",
+    Callback = function()
+        local toggle = true
+        while toggle and task.wait(1) do
+            AutoPickup()
+        end
+    end
+})
 
        AddButton(Tab2o, {
-     Name = "AimNPC [PRO]",
+     Name = "AimNPC",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Dead-Rails-Aimlock-NPC.txt"))()
   end
@@ -161,7 +210,7 @@ local isCoordVisible = false
 
 --// Nút Bật Noclip
 AddButton(Tab2o, {
-    Name = "Noclip [PRO]",
+    Name = "Noclip",
     Callback = function()
         noclipEnabled = not noclipEnabled
         if noclipEnabled then
@@ -217,7 +266,7 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 AddButton(Tab2o, {
-    Name = "Coordinates [PRO]",
+    Name = "Coordinates",
     Callback = function()
         isCoordVisible = not isCoordVisible
         coordGui.Enabled = isCoordVisible
@@ -257,7 +306,7 @@ end
 
 -- Thực hiện fake ban khi người chơi nhập lệnh hoặc sự kiện nào đó
 AddButton(Tab2o, {
-    Name = "Kill aura [PRO]",
+    Name = "Kill aura",
     Callback = function()
         showBannedMessage()
     end
@@ -292,7 +341,7 @@ end
 AddButton(
     Tab2o,
     {
-        Name = "Change server [PRO]",
+        Name = "Change server",
         Callback = function()
             switchServer()
         end
