@@ -1,161 +1,88 @@
---// UI và Toggle Button
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "CatMemeGUI"
 
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 250, 0, 180) -- chỉnh kích cỡ gui 
-MainFrame.Position = UDim2.new(0.5, -125, 0.5, -65)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.Visible = true
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/refs/heads/main/menu-for-you-hub.txt")))()
 
--- Bo góc cho Frame
-local MainUICorner = Instance.new("UICorner", MainFrame)
-MainUICorner.CornerRadius = UDim.new(0, 8)
+       local Window = MakeWindow({
+         Hub = {
+         Title = "Loading Cat V2",
+         Animation = "Script by Kzu123"
+         },
+        Key = {
+        KeySystem = true,
+        Title = "Loading Cat V2",
+        Description = "Script by Kzu123",
+        KeyLink = "https://discord.gg/DmN8sE7Y",
+        Keys = {"Loading-Cat-V2"},
+        Notifi = {
+        Notifications = true,
+        CorrectKey = "Đang chạy script...",
+       Incorrectkey = "Key không tồn tại",
+       CopyKeyLink = "Đã sao chép link",
+      }
+    }
+  })
 
--- Tiêu đề
-local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.Position = UDim2.new(0, 0, 0, 0)
-Title.BackgroundTransparency = 1
-Title.Text = "Loading Cat V1"
-Title.TextColor3 = Color3.new(1, 1, 1)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
+       MinimizeButton({
+       Image = "http://www.roblox.com/asset/?id=113684414634355",
+       Size = {50, 50},
+       Color = Color3.fromRGB(10, 10, 10),
+       Corner = true,
+       Stroke = false,
+       StrokeColor = Color3.fromRGB(255, 0, 0)
+      })
+      
+------ Tab
+     local Tab1o = MakeTab({Name = "🔮Discord"})
+     local Tab2o = MakeTab({Name = "🔰Main Script"})
 
--- Nút bật/tắt Noclip
-local NoclipButton = Instance.new("TextButton", MainFrame)
-NoclipButton.Size = UDim2.new(0.7, 0, 0, 40)
-NoclipButton.Position = UDim2.new(0.15, 0, 0.5, -20)
-NoclipButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-NoclipButton.Text = "Bật Noclip"
-NoclipButton.TextColor3 = Color3.new(1, 1, 1)
-NoclipButton.Font = Enum.Font.Gotham
-NoclipButton.TextSize = 18
 
-local ButtonUICorner = Instance.new("UICorner", NoclipButton)
-ButtonUICorner.CornerRadius = UDim.new(1, 0)
+----- Discord
 
--- Nút ẩn hiện GUI
-local ToggleBtn = Instance.new("ImageButton", ScreenGui)
-ToggleBtn.Name = "MinimizeButton"
-ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
-ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-ToggleBtn.Image = "http://www.roblox.com/asset/?id=113684414634355"
-local UICorner = Instance.new("UICorner", ToggleBtn)
-UICorner.CornerRadius = UDim.new(1, 0)
 
-local sound = Instance.new("Sound", ToggleBtn)
-sound.SoundId = "rbxassetid://9118823107"
-sound.Volume = 1
-sound.Name = "LoadingSound"
+   Section = AddSection(Tab1o, {"Tham gia discord "})          
 
-local isVisible = true
-ToggleBtn.MouseButton1Click:Connect(function()
-	isVisible = not isVisible
-	MainFrame.Visible = isVisible
-	sound:Play()
-end)
 
--- Code noclip
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
-local noclipEnabled = false
-local noclipConnection
 
-local function ToggleNoclip(value)
-    noclipEnabled = value
-    if noclipEnabled then
-        if noclipConnection then noclipConnection:Disconnect() end
-        noclipConnection = RunService.Stepped:Connect(function()
-            if LocalPlayer.Character then
-                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end
-        end)
-    else
-        if noclipConnection then
-            noclipConnection:Disconnect()
-            noclipConnection = nil
-        end
+AddButton(Tab1o, {
+    Name = "Discord",
+    Callback = function()
+        local url = "https://discord.gg/dgASGNpW" 
+
+        -- Mở link trên trình duyệt bằng setclipboard
+        setclipboard(url)
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Mở Discord",
+            Text = "Link đã được sao chép vào clipboard! Hãy dán vào trình duyệt.",
+            Duration = 5
+        })
+
+        -- Kick người chơi khỏi game
+        game.Players.LocalPlayer:Kick("Tham gia Discord để tiếp tục sử dụng menu!")
     end
-end
-
--- Gắn sự kiện cho nút
-NoclipButton.MouseButton1Click:Connect(function()
-    noclipEnabled = not noclipEnabled
-    ToggleNoclip(noclipEnabled)
-    NoclipButton.Text = noclipEnabled and "Tắt Noclip" or "Bật Noclip"
-end)
+})
 
 
 
 
+   Section = AddSection(Tab1o, {"Chức năng Script "})
+   Section = AddSection(Tab1o, {"• Bypass Anti-cheat"})
+   Section = AddSection(Tab1o, {"• Chặn lệnh banned"})
+
+
+
+   Section = AddSection(Tab2o, {"Script [PRO]"})
+
+
+
+       AddButton(Tab2o, {
+     Name = "AimNPC [PRO]",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Dead-Rails-Aimlock-NPC.txt"))()
+  end
+  })   
 
 
 
 
 
--- Tạo GUI hiển thị tọa độ
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
 
-local coordGui = Instance.new("ScreenGui")
-coordGui.Name = "CoordDisplay"
-coordGui.Parent = player:WaitForChild("PlayerGui")
-coordGui.Enabled = false
 
-local label = Instance.new("TextLabel", coordGui)
-label.Size = UDim2.new(0, 300, 0, 50)
-label.Position = UDim2.new(0, 10, 0, 10)
-label.BackgroundTransparency = 0.3
-label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-label.TextColor3 = Color3.fromRGB(255, 255, 255)
-label.TextScaled = true
-label.Font = Enum.Font.SourceSansBold
-label.Text = "Tọa độ: Đang tải..."
-
--- Cập nhật tọa độ mỗi frame
-RunService.RenderStepped:Connect(function()
-    if coordGui.Enabled then
-        local char = player.Character or player.CharacterAdded:Wait()
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            local pos = hrp.Position
-            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
-        end
-    end
-end)
-
--- Đảm bảo khi respawn vẫn giữ GUI
-player.CharacterAdded:Connect(function()
-    coordGui.Parent = player:WaitForChild("PlayerGui")
-end)
-
--- Nút bật/tắt tọa độ
-local CoordToggleBtn = Instance.new("TextButton", MainFrame)
-CoordToggleBtn.Size = UDim2.new(0.7, 0, 0, 40)  -- Kích thước nút giống Noclip
-CoordToggleBtn.Position = UDim2.new(0.15, 0, 0.5, 30)  -- Vị trí dưới nút Noclip
-CoordToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-CoordToggleBtn.Text = "Bật Tọa Độ"
-CoordToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CoordToggleBtn.Font = Enum.Font.Gotham
-CoordToggleBtn.TextSize = 18
-
--- Thêm UICorner để làm tròn góc cho nút giống Noclip
-local ButtonUICorner = Instance.new("UICorner", CoordToggleBtn)
-ButtonUICorner.CornerRadius = UDim.new(1, 0)
-
-local isCoordVisible = false
-CoordToggleBtn.MouseButton1Click:Connect(function()
-    isCoordVisible = not isCoordVisible
-    coordGui.Enabled = isCoordVisible
-    CoordToggleBtn.Text = isCoordVisible and "Tắt Tọa Độ" or "Bật Tọa Độ"
-end)
