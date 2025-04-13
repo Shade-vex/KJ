@@ -1,6 +1,6 @@
 -- Dữ liệu key và thời gian
 local fileName = "keyData.txt"
-local correctKey = "Free|Loading|1asld89kso"
+local correctKey = "Loading-Cat-V2-by-Kzu123"
 local keyValidTime = 86400 -- 24h
 
 -- Hàm kiểm tra và đọc key từ file
@@ -18,8 +18,9 @@ local function isKeyValid()
 end
 
 if isKeyValid() then
-	-- Nếu key hợp lệ => tự chạy script luôn
+	-- Nếu key hợp lệ => tự chạy cả 2 script
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%25Loading.txt"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%2C2%25loading.txt"))()
 	return
 end
 
@@ -88,6 +89,7 @@ CheckKeyButton.MouseButton1Click:Connect(function()
 		writefile(fileName, correctKey .. "|" .. tostring(tick()))
 		ScreenGui:Destroy()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%25Loading.txt"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0%2C2%25loading.txt"))()
 	else
 		KeyBox.Text = "Key không đúng!"
 	end
