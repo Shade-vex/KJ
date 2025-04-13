@@ -1,0 +1,64 @@
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local Frame = Instance.new("Frame")
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 200, 0, 50)
+Frame.Position = UDim2.new(0, 10, 0.5, -50)  -- Căn giữa màn hình
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundTransparency = 0.5
+Frame.Draggable = true  -- Cho phép kéo thả
+
+local TextLabel = Instance.new("TextLabel")
+TextLabel.Parent = Frame
+TextLabel.Size = UDim2.new(1, 0, 1, 0)
+TextLabel.Position = UDim2.new(0, 0, 0, 0)
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1
+TextLabel.TextSize = 24
+TextLabel.Text = "10:00"
+
+local countdownTime = 600  -- 10 minutes in seconds
+
+local function updateCountdown()
+    while countdownTime > 0 do
+        local minutes = math.floor(countdownTime / 60)
+        local seconds = countdownTime % 60
+        TextLabel.Text = string.format("%02d:%02d", minutes, seconds)
+        countdownTime = countdownTime - 1
+        wait(1)
+    end
+
+    -- Sau khi đếm ngược kết thúc, hiển thị chữ "End Countdown" với hiệu ứng màu sắc
+    TextLabel.Text = "End Countdown"  -- Thay thế thời gian bằng chữ "End Countdown"
+
+    local rainbowText = "End Countdown"
+    local colors = {
+        Color3.fromRGB(255, 0, 0),
+        Color3.fromRGB(255, 127, 0),
+        Color3.fromRGB(255, 255, 0),
+        Color3.fromRGB(0, 255, 0),
+        Color3.fromRGB(0, 0, 255),
+        Color3.fromRGB(75, 0, 130),
+        Color3.fromRGB(238, 130, 238)
+    }
+    
+    -- Hiển thị chữ 7 màu
+    local function updateRainbowText()
+        local index = 1
+        while true do
+            TextLabel.TextColor3 = colors[index]
+            index = index + 1
+            if index > #colors then
+                index = 1
+            end
+            wait(0.2)  -- Thay đổi màu mỗi 0.2 giây
+        end
+    end
+
+    -- Bắt đầu hiệu ứng chữ 7 màu
+    updateRainbowText()
+end
+
+-- Bắt đầu đếm ngược khi script chạy
+updateCountdown()wn()
