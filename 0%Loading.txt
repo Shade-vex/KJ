@@ -98,7 +98,7 @@ AddButton(Tab2o, {
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
         local flying = false
-        local flyHeight = 70 -- Chiều cao bay
+        local flyHeight = 18 -- Chiều cao bay
         local flySpeed = 10 -- Tốc độ bay
 
         -- Hàm toggle bay
