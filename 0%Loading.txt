@@ -84,53 +84,80 @@ AddButton(Tab1o, {
   end
   })
 
-local Radius = 50 -- bán kính nhặt đồ (50m)
-local Debounce = false
+AddToggle(Tab2o, {
+    Name = "Bypass Fly",
+    Default = false,
+    Callback = function(state)
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local UIS = game:GetService("UserInputService")
 
--- Danh sách tên các vật phẩm cần nhặt
-local TargetNames = {
-    ["Ammo"] = true,
-    ["Bond"] = true
-}
+        local player = Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local root = character:WaitForChild("HumanoidRootPart")
 
--- Hàm kiểm tra khoảng cách
-local function isInRadius(part, root)
-    return (part.Position - root.Position).Magnitude <= Radius
-end
+        local flying = state
+        local speed = 16
+        local direction = Vector3.zero
 
--- Hàm thực hiện nhặt
-local function AutoPickup()
-    if Debounce then return end
-    Debounce = true
-
-    local plr = game:GetService("Players").LocalPlayer
-    local char = plr.Character
-    if not (char and char:FindFirstChild("HumanoidRootPart")) then
-        Debounce = false
-        return
-    end
-    local root = char.HumanoidRootPart
-
-    for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("TouchTransmitter") and v.Parent and TargetNames[v.Parent.Name] then
-            local itemPart = v.Parent
-            if isInRadius(itemPart, root) then
-                firetouchinterest(root, itemPart, 0)
-                firetouchinterest(root, itemPart, 1)
-            end
+        -- Cập nhật hướng từ bàn phím
+        local function updateDirection()
+            direction = Vector3.new(
+                (UIS:IsKeyDown(Enum.KeyCode.D) and 1 or 0) - (UIS:IsKeyDown(Enum.KeyCode.A) and 1 or 0),
+                (UIS:IsKeyDown(Enum.KeyCode.Space) and 1 or 0) - (UIS:IsKeyDown(Enum.KeyCode.LeftControl) and 1 or 0),
+                (UIS:IsKeyDown(Enum.KeyCode.S) and 1 or 0) - (UIS:IsKeyDown(Enum.KeyCode.W) and 1 or 0)
+            )
         end
-    end
 
-    Debounce = false
-end
+        UIS.InputBegan:Connect(updateDirection)
+        UIS.InputEnded:Connect(updateDirection)
 
--- Tạo nút bật trong Tab2o
-AddButton(Tab2o, {
-    Name = "Auto Item",
-    Callback = function()
-        local toggle = true
-        while toggle and task.wait(1) do
-            AutoPickup()
+        -- Hướng di chuyển mobile
+        local function getMobileDirection()
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.MoveDirection.Magnitude > 0 then
+                return humanoid.MoveDirection
+            end
+            return Vector3.zero
+        end
+
+        -- Kết nối bay
+        if flying then
+            local flyConnection
+            flyConnection = RunService.RenderStepped:Connect(function()
+                if character and root then
+                    local moveVec
+
+                    if UIS.TouchEnabled then
+                        moveVec = getMobileDirection()
+                    else
+                        moveVec = workspace.CurrentCamera.CFrame.RightVector * direction.X +
+                                  Vector3.yAxis * direction.Y +
+                                  -workspace.CurrentCamera.CFrame.LookVector * direction.Z
+                    end
+
+                    if moveVec.Magnitude > 0 then
+                        root.Velocity = moveVec.Unit * speed
+                    else
+                        root.Velocity = Vector3.zero
+                    end
+
+                    root.AssemblyLinearVelocity = root.Velocity
+                else
+                    flyConnection:Disconnect()
+                end
+            end)
+
+            -- Tự dừng khi tắt toggle
+            spawn(function()
+                while flying do
+                    task.wait(0.1)
+                    if not flying then
+                        flyConnection:Disconnect()
+                        break
+                    end
+                end
+            end)
         end
     end
 })
