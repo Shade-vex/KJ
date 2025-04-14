@@ -230,11 +230,89 @@ end
 
 -- Thêm nút vào GUI
 AddButton(Tab2o, {
-    Name = "ESP Item (Dead Rails)",
+    Name = "ESP Shop",
     Callback = function()
         toggleItemESP()
     end
 })
+
+
+
+
+local espEnabled = false
+local espObjects = {}
+
+local function createESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    if not adornee then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextStrokeTransparency = 0.2
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = "OBJECT"
+
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
+
+    spawn(function()
+        while espEnabled and adornee and adornee.Parent do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
+                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
+            end
+            wait(0.2)
+        end
+        billboard:Destroy()
+    end)
+end
+
+local function toggleAllESP()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") or obj:IsA("Model") then
+                createESP(obj)
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) then
+                createESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
+end
+
+-- Nút bật/tắt ESP
+AddButton(Tab2o, {
+    Name = "ESP Tất Cả Vật Thể",
+    Callback = function()
+        toggleAllESP()
+    end
+})
+
+
+
 
 
        AddButton(Tab2o, {
