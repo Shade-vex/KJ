@@ -572,7 +572,66 @@ AddButton(Tab3o, {
 
 
 
+local radius = 1500
+local collectNames = {
+    Bon = true,
+    Partl = true
+}
 
+local function createESP(part)
+    if not part then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = part
+    billboard.Size = UDim2.new(0, 200, 0, 50) -- Kích thước ESP
+    billboard.StudsOffset = Vector3.new(0, 3, 0) -- Nâng lên khỏi vật phẩm
+    billboard.AlwaysOnTop = true
+
+    local textLabel = Instance.new("TextLabel", billboard)
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.new(1, 0, 0) -- Màu đỏ siêu đậm 
+    textLabel.TextScaled = true
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextStrokeTransparency = 0.5
+    textLabel.Text = part.Name -- Hiển thị tên vật phẩm
+
+    billboard.Parent = part
+end
+
+local function getNearbyItems()
+    local items = {}
+    local char = game.Players.LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return items end
+
+    local pos = char.HumanoidRootPart.Position
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if (obj:IsA("BasePart") or obj:IsA("Model")) and collectNames[obj.Name] then
+            local targetPart = obj:IsA("Model") and obj:FindFirstChildWhichIsA("BasePart") or obj
+            if targetPart and (pos - targetPart.Position).Magnitude <= radius then
+                table.insert(items, targetPart)
+            end
+        end
+    end
+
+    return items
+end
+
+local function enableESP()
+    -- Duyệt và tạo ESP cho tất cả vật phẩm trong bán kính
+    for _, item in ipairs(getNearbyItems()) do
+        createESP(item)
+    end
+end
+
+-- Nút bật ESP
+AddButton(Tab2o, {
+    Name = "ESP Bond",
+    Callback = function()
+        enableESP()
+    end
+})
 
 
    Section = AddSection(Tab4o, {"Chức năng Script "})
