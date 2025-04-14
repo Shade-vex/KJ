@@ -77,6 +77,96 @@ AddButton(Tab1o, {
   })
 
 
+
+
+
+local espEnabled = false -- Trạng thái bật/tắt ESP
+
+local function createESP(player)
+    if player == game.Players.LocalPlayer then return end -- Không hiển thị bản thân
+
+    local character = player.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = character.HumanoidRootPart
+    billboard.Size = UDim2.new(0, 200, 0, 50) -- Kích thước mặc định lớn
+    billboard.StudsOffset = Vector3.new(0, 3, 0) -- Đặt ở giữa nhân vật
+    billboard.AlwaysOnTop = true
+
+    local textLabel = Instance.new("TextLabel", billboard)
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.new(0, 255, 0) -- Màu xanh lá 
+    textLabel.TextScaled = false
+    textLabel.TextSize = 20 -- Giữ nguyên kích thước chữ
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextStrokeTransparency = 0.2 -- Viền chữ giúp dễ nhìn hơn
+
+    billboard.Parent = character.HumanoidRootPart
+
+    -- Cập nhật vị trí & giữ nguyên kích thước theo khoảng cách
+    spawn(function()
+        while espEnabled and character and character:FindFirstChild("Humanoid") and character:FindFirstChild("HumanoidRootPart") do
+            local humanoid = character:FindFirstChild("Humanoid")
+            local localPlayer = game.Players.LocalPlayer
+            if localPlayer and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (localPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
+                
+                -- Giữ nguyên kích thước 20 dù ở xa hay gần
+                local size = 20
+                billboard.Size = UDim2.new(0, size * 10, 0, size * 2)
+
+                -- Hiển thị thông tin máu & khoảng cách
+                textLabel.Text = string.format("[%s] HP: %d | %dm", player.Name, math.floor(humanoid.Health), math.floor(distance))
+            end
+            wait(0.1)
+        end
+        billboard:Destroy()
+    end)
+end
+
+-- Hàm bật/tắt ESP
+local function toggleESP()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        -- Thêm ESP cho tất cả người chơi
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                createESP(player)
+            end
+        end
+
+        -- Lắng nghe người chơi mới tham gia
+        game.Players.PlayerAdded:Connect(function(player)
+            if espEnabled then createESP(player) end
+        end)
+    else
+        -- Xóa toàn bộ ESP khi tắt
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                for _, gui in pairs(player.Character.HumanoidRootPart:GetChildren()) do
+                    if gui:IsA("BillboardGui") then gui:Destroy() end
+                end
+            end
+        end
+    end
+end
+
+-- Nút bật/tắt ESP
+AddButton(Tab2o, {
+    Name = "ESP Player",
+    Callback = function()
+        toggleESP()
+    end
+})   
+
+
+
+
+
+
        AddButton(Tab2o, {
      Name = "Teleport to End",
     Callback = function()
@@ -86,43 +176,12 @@ AddButton(Tab1o, {
 
 
 
-AddButton(Tab2o, {
-    Name = "Fly to Safe",  -- Tên của nút
+       AddButton(Tab2o, {
+     Name = "Fly Script",
     Callback = function()
-        local UserInputService = game:GetService("UserInputService")
-        local RunService = game:GetService("RunService")
-        local Players = game:GetService("Players")
-        
-        local player = Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-        local flying = false
-        local flyHeight = 18 -- Chiều cao bay
-        local flySpeed = 10 -- Tốc độ bay
-
-        -- Hàm toggle bay
-        local function toggleFly()
-            flying = not flying
-            if flying then
-                while flying do
-                    -- Di chuyển nhân vật lên độ cao mục tiêu
-                    local currentHeight = humanoidRootPart.Position.Y
-                    if currentHeight < flyHeight then
-                        humanoidRootPart.Velocity = Vector3.new(0, flySpeed, 0)
-                    else
-                        humanoidRootPart.Velocity = Vector3.new(0, 0, 0)  -- Dừng tại độ cao mục tiêu
-                    end
-                    RunService.RenderStepped:Wait()
-                end
-            else
-                humanoidRootPart.Velocity = Vector3.new(0, 0, 0)  -- Dừng bay khi tắt
-            end
-        end
-
-        toggleFly()  -- Bật hoặc tắt chế độ bay khi nút được nhấn
-    end
-})
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Fly-Pro-Max"))()
+  end
+  })   
 
 
 
