@@ -86,62 +86,149 @@ AddButton(Tab1o, {
 
 
 
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local RS = game:GetService("RunService")
 local Players = game:GetService("Players")
-
 local player = Players.LocalPlayer
-local flySpeed = 50
+
 local flying = false
+local flySpeed = 16
+local currentMethod = 0
+local connection
+local attachments = {}
 
-local function toggleFly()
-    local character = player.Character or player.CharacterAdded:Wait()
-    local hrp = character:WaitForChild("HumanoidRootPart")
-
-    flying = not flying
-    if flying then
-        task.spawn(function()
-            while flying and hrp and hrp.Parent do
-                local moveDir = Vector3.zero
-                local cam = workspace.CurrentCamera
-
-                if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                    moveDir += cam.CFrame.LookVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                    moveDir -= cam.CFrame.LookVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                    moveDir -= cam.CFrame.RightVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                    moveDir += cam.CFrame.RightVector
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-                    moveDir += Vector3.new(0, 1, 0)
-                end
-                if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                    moveDir -= Vector3.new(0, 1, 0)
-                end
-
-                if moveDir.Magnitude > 0 then
-                    moveDir = moveDir.Unit * flySpeed
-                end
-
-                hrp.Velocity = moveDir
-                RunService.RenderStepped:Wait()
-            end
-
-            if hrp then
-                hrp.Velocity = Vector3.zero
-            end
-        end)
+local function reset()
+    if connection then connection:Disconnect() end
+    if attachments then
+        for _, a in pairs(attachments) do
+            if a then pcall(function() a:Destroy() end) end
+        end
+        attachments = {}
     end
 end
 
--- Gắn vào nút AddButton
+local function method1_CFrameFly(hrp)
+    connection = RS.RenderStepped:Connect(function()
+        local cam = workspace.CurrentCamera
+        local moveVec = Vector3.new()
+        if UIS:IsKeyDown(Enum.KeyCode.W) then moveVec += cam.CFrame.LookVector end
+        if UIS:IsKeyDown(Enum.KeyCode.S) then moveVec -= cam.CFrame.LookVector end
+        if UIS:IsKeyDown(Enum.KeyCode.A) then moveVec -= cam.CFrame.RightVector end
+        if UIS:IsKeyDown(Enum.KeyCode.D) then moveVec += cam.CFrame.RightVector end
+        if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
+        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVec -= Vector3.new(0, 1, 0) end
+
+        if moveVec.Magnitude > 0 then
+            hrp.CFrame = hrp.CFrame + moveVec.Unit * flySpeed * RS.RenderStepped:Wait()
+        end
+    end)
+end
+
+local function method2_BodyVelocity(hrp)
+    local bv = Instance.new("BodyVelocity")
+    bv.Name = "FlyBV"
+    bv.Velocity = Vector3.zero
+    bv.MaxForce = Vector3.new(1,1,1) * 1e6
+    bv.Parent = hrp
+    table.insert(attachments, bv)
+
+    connection = RS.RenderStepped:Connect(function()
+        local cam = workspace.CurrentCamera
+        local moveVec = Vector3.zero
+        if UIS:IsKeyDown(Enum.KeyCode.W) then moveVec += cam.CFrame.LookVector end
+        if UIS:IsKeyDown(Enum.KeyCode.S) then moveVec -= cam.CFrame.LookVector end
+        if UIS:IsKeyDown(Enum.KeyCode.A) then moveVec -= cam.CFrame.RightVector end
+        if UIS:IsKeyDown(Enum.KeyCode.D) then moveVec += cam.CFrame.RightVector end
+        if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
+        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVec -= Vector3.new(0, 1, 0) end
+        if moveVec.Magnitude > 0 then
+            bv.Velocity = moveVec.Unit * flySpeed
+        else
+            bv.Velocity = Vector3.zero
+        end
+    end)
+end
+
+local function method3_AlignFly(hrp)
+    local att0 = Instance.new("Attachment", hrp)
+    local att1 = Instance.new("Attachment", workspace.CurrentCamera)
+    local alignPos = Instance.new("AlignPosition")
+    alignPos.MaxForce = 999999
+    alignPos.Responsiveness = 25
+    alignPos.Attachment0 = att0
+    alignPos.Attachment1 = att1
+    alignPos.Parent = hrp
+
+    local alignOri = Instance.new("AlignOrientation")
+    alignOri.MaxTorque = 999999
+    alignOri.Responsiveness = 20
+    alignOri.Attachment0 = att0
+    alignOri.Attachment1 = att1
+    alignOri.Parent = hrp
+
+    attachments = { att0, att1, alignPos, alignOri }
+
+    connection = RS.RenderStepped:Connect(function()
+        local cam = workspace.CurrentCamera
+        local moveVec = Vector3.zero
+        if UIS:IsKeyDown(Enum.KeyCode.W) then moveVec += cam.CFrame.LookVector end
+        if UIS:IsKeyDown(Enum.KeyCode.S) then moveVec -= cam.CFrame.LookVector end
+        if UIS:IsKeyDown(Enum.KeyCode.A) then moveVec -= cam.CFrame.RightVector end
+        if UIS:IsKeyDown(Enum.KeyCode.D) then moveVec += cam.CFrame.RightVector end
+        if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
+        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVec -= Vector3.new(0, 1, 0) end
+
+        att1.Position = hrp.Position + moveVec.Unit * flySpeed
+    end)
+end
+
+local function testFlyingWorks(hrp)
+    local before = hrp.Position
+    wait(1)
+    local after = hrp.Position
+    return (before - after).Magnitude > 1
+end
+
+local function startFly()
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    currentMethod = 1
+    reset()
+
+    local tried = {}
+
+    while flying do
+        if currentMethod == 1 then
+            method1_CFrameFly(hrp)
+            wait(1)
+            if testFlyingWorks(hrp) then break else table.insert(tried, 1) reset() currentMethod = 2 end
+        elseif currentMethod == 2 then
+            method2_BodyVelocity(hrp)
+            wait(1)
+            if testFlyingWorks(hrp) then break else table.insert(tried, 2) reset() currentMethod = 3 end
+        elseif currentMethod == 3 then
+            method3_AlignFly(hrp)
+            wait(1)
+            if testFlyingWorks(hrp) then break else table.insert(tried, 3) reset() break end -- cuối cùng
+        else
+            break
+        end
+    end
+end
+
+local function toggleFly()
+    flying = not flying
+    if flying then
+        startFly()
+    else
+        reset()
+    end
+end
+
+-- Gắn vào nút AddButton như sau:
 AddButton(Tab2o, {
-    Name = "Bypass Fly",
+    Name = "Utimate Bypass Fly",
     Callback = function()
         toggleFly()
     end
