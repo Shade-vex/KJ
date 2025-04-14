@@ -164,7 +164,57 @@ AddButton(Tab2o, {
 
 
 
+local espEnabled = false -- Biến kiểm tra trạng thái ESP
+local espThread = nil -- Để quản lý việc bật/tắt ESP
 
+-- Hàm vẽ ESP cho vật phẩm
+local function drawESP(part)
+    if not part:IsA("BasePart") then return end
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = part
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0) -- Vị trí hiển thị trên vật phẩm
+
+    local label = Instance.new("TextLabel")
+    label.Parent = billboard
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ trắng
+    label.Text = "Item: " .. part.Name -- Hiển thị tên vật phẩm (hoặc tag)
+    label.TextSize = 18
+    label.TextStrokeTransparency = 0.5
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+
+    billboard.Parent = game.CoreGui
+end
+
+-- Hàm kiểm tra và bật/tắt ESP
+local function toggleESP()
+    espEnabled = not espEnabled
+    if espEnabled then
+        espThread = game:GetService("RunService").Heartbeat:Connect(function()
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                -- Kiểm tra vật phẩm có thể là BasePart, Vật phẩm trong Dead Rails
+                if obj:IsA("BasePart") and obj.Name:match("Item") then 
+                    drawESP(obj)
+                end
+            end
+        end)
+    else
+        if espThread then
+            espThread:Disconnect()
+            espThread = nil
+        end
+    end
+end
+
+-- Thêm nút vào GUI để bật/tắt ESP
+AddButton(Tab2o, {
+    Name = "ESP All Items",
+    Callback = function()
+        toggleESP()
+    end
+})
 
 
        AddButton(Tab2o, {
