@@ -86,160 +86,43 @@ AddButton(Tab1o, {
 
 
 
-local UIS = game:GetService("UserInputService")
-local RS = game:GetService("RunService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-local flying = false
-local flySpeed = 16
-local currentMethod = 0
-local connection
-local attachments = {}
-
-local function reset()
-    if connection then connection:Disconnect() end
-    if attachments then
-        for _, a in pairs(attachments) do
-            if a then pcall(function() a:Destroy() end) end
-        end
-        attachments = {}
-    end
-end
-
-local function method1_CFrameFly(hrp)
-    connection = RS.RenderStepped:Connect(function()
-        local cam = workspace.CurrentCamera
-        local moveVec = Vector3.new()
-        if UIS:IsKeyDown(Enum.KeyCode.W) then moveVec += cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.S) then moveVec -= cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.A) then moveVec -= cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.D) then moveVec += cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
-        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVec -= Vector3.new(0, 1, 0) end
-
-        if moveVec.Magnitude > 0 then
-            hrp.CFrame = hrp.CFrame + moveVec.Unit * flySpeed * RS.RenderStepped:Wait()
-        end
-    end)
-end
-
-local function method2_BodyVelocity(hrp)
-    local bv = Instance.new("BodyVelocity")
-    bv.Name = "FlyBV"
-    bv.Velocity = Vector3.zero
-    bv.MaxForce = Vector3.new(1,1,1) * 1e6
-    bv.Parent = hrp
-    table.insert(attachments, bv)
-
-    connection = RS.RenderStepped:Connect(function()
-        local cam = workspace.CurrentCamera
-        local moveVec = Vector3.zero
-        if UIS:IsKeyDown(Enum.KeyCode.W) then moveVec += cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.S) then moveVec -= cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.A) then moveVec -= cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.D) then moveVec += cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
-        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVec -= Vector3.new(0, 1, 0) end
-        if moveVec.Magnitude > 0 then
-            bv.Velocity = moveVec.Unit * flySpeed
-        else
-            bv.Velocity = Vector3.zero
-        end
-    end)
-end
-
-local function method3_AlignFly(hrp)
-    local att0 = Instance.new("Attachment", hrp)
-    local att1 = Instance.new("Attachment", workspace.CurrentCamera)
-    local alignPos = Instance.new("AlignPosition")
-    alignPos.MaxForce = 999999
-    alignPos.Responsiveness = 25
-    alignPos.Attachment0 = att0
-    alignPos.Attachment1 = att1
-    alignPos.Parent = hrp
-
-    local alignOri = Instance.new("AlignOrientation")
-    alignOri.MaxTorque = 999999
-    alignOri.Responsiveness = 20
-    alignOri.Attachment0 = att0
-    alignOri.Attachment1 = att1
-    alignOri.Parent = hrp
-
-    attachments = { att0, att1, alignPos, alignOri }
-
-    connection = RS.RenderStepped:Connect(function()
-        local cam = workspace.CurrentCamera
-        local moveVec = Vector3.zero
-        if UIS:IsKeyDown(Enum.KeyCode.W) then moveVec += cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.S) then moveVec -= cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.A) then moveVec -= cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.D) then moveVec += cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
-        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVec -= Vector3.new(0, 1, 0) end
-
-        att1.Position = hrp.Position + moveVec.Unit * flySpeed
-    end)
-end
-
-local function testFlyingWorks(hrp)
-    local before = hrp.Position
-    wait(1)
-    local after = hrp.Position
-    return (before - after).Magnitude > 1
-end
-
-local function startFly()
-    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    currentMethod = 1
-    reset()
-
-    local tried = {}
-
-    while flying do
-        if currentMethod == 1 then
-            method1_CFrameFly(hrp)
-            wait(1)
-            if testFlyingWorks(hrp) then break else table.insert(tried, 1) reset() currentMethod = 2 end
-        elseif currentMethod == 2 then
-            method2_BodyVelocity(hrp)
-            wait(1)
-            if testFlyingWorks(hrp) then break else table.insert(tried, 2) reset() currentMethod = 3 end
-        elseif currentMethod == 3 then
-            method3_AlignFly(hrp)
-            wait(1)
-            if testFlyingWorks(hrp) then break else table.insert(tried, 3) reset() break end -- cuối cùng
-        else
-            break
-        end
-    end
-end
-
-local function toggleFly()
-    flying = not flying
-    if flying then
-        startFly()
-    else
-        reset()
-    end
-end
-
--- Gắn vào nút AddButton như sau:
 AddButton(Tab2o, {
-    Name = "Utimate Bypass Fly",
+    Name = "Fly to Safe",  -- Tên của nút
     Callback = function()
-        toggleFly()
+        local UserInputService = game:GetService("UserInputService")
+        local RunService = game:GetService("RunService")
+        local Players = game:GetService("Players")
+        
+        local player = Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        local flying = false
+        local flyHeight = 70 -- Chiều cao bay
+        local flySpeed = 10 -- Tốc độ bay
+
+        -- Hàm toggle bay
+        local function toggleFly()
+            flying = not flying
+            if flying then
+                while flying do
+                    -- Di chuyển nhân vật lên độ cao mục tiêu
+                    local currentHeight = humanoidRootPart.Position.Y
+                    if currentHeight < flyHeight then
+                        humanoidRootPart.Velocity = Vector3.new(0, flySpeed, 0)
+                    else
+                        humanoidRootPart.Velocity = Vector3.new(0, 0, 0)  -- Dừng tại độ cao mục tiêu
+                    end
+                    RunService.RenderStepped:Wait()
+                end
+            else
+                humanoidRootPart.Velocity = Vector3.new(0, 0, 0)  -- Dừng bay khi tắt
+            end
+        end
+
+        toggleFly()  -- Bật hoặc tắt chế độ bay khi nút được nhấn
     end
 })
-
--- Phím tắt F
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.F then
-        toggleFly()
-    end
-end)
 
 
 
