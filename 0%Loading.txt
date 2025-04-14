@@ -164,55 +164,75 @@ AddButton(Tab2o, {
 
 
 
-local espEnabled = false -- Biến kiểm tra trạng thái ESP
-local espThread = nil -- Để quản lý việc bật/tắt ESP
+local espEnabled = false -- Trạng thái bật/tắt ESP
+local espItems = {} -- Danh sách các Billboard đã tạo
 
--- Hàm vẽ ESP cho vật phẩm
-local function drawESP(part)
+local function createItemESP(part)
     if not part:IsA("BasePart") then return end
+
     local billboard = Instance.new("BillboardGui")
     billboard.Adornee = part
     billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 3, 0) -- Vị trí hiển thị trên vật phẩm
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
 
-    local label = Instance.new("TextLabel")
-    label.Parent = billboard
+    local label = Instance.new("TextLabel", billboard)
     label.Size = UDim2.new(1, 0, 1, 0)
     label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ trắng
-    label.Text = "Item: " .. part.Name -- Hiển thị tên vật phẩm (hoặc tag)
-    label.TextSize = 18
-    label.TextStrokeTransparency = 0.5
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextStrokeTransparency = 0.2
     label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = "ITEM"
 
     billboard.Parent = game.CoreGui
+    table.insert(espItems, billboard)
+
+    spawn(function()
+        while espEnabled and part and part.Parent do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - part.Position).Magnitude
+                label.Text = string.format("%s | %dm", part.Name, math.floor(dist))
+            end
+            wait(0.2)
+        end
+        billboard:Destroy()
+    end)
 end
 
--- Hàm kiểm tra và bật/tắt ESP
-local function toggleESP()
+local function toggleItemESP()
     espEnabled = not espEnabled
+
     if espEnabled then
-        espThread = game:GetService("RunService").Heartbeat:Connect(function()
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                -- Kiểm tra vật phẩm có thể là BasePart, Vật phẩm trong Dead Rails
-                if obj:IsA("BasePart") and obj.Name:match("Item") then 
-                    drawESP(obj)
-                end
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and obj.Name:lower():match("item") then
+                createItemESP(obj)
+            end
+        end
+
+        -- Tự động thêm ESP nếu item mới xuất hiện
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and obj:IsA("BasePart") and obj.Name:lower():match("item") then
+                createItemESP(obj)
             end
         end)
     else
-        if espThread then
-            espThread:Disconnect()
-            espThread = nil
+        for _, esp in ipairs(espItems) do
+            if esp and esp.Parent then
+                esp:Destroy()
+            end
         end
+        espItems = {}
     end
 end
 
--- Thêm nút vào GUI để bật/tắt ESP
+-- Thêm nút vào GUI
 AddButton(Tab2o, {
-    Name = "ESP All Items",
+    Name = "ESP Item (Dead Rails)",
     Callback = function()
-        toggleESP()
+        toggleItemESP()
     end
 })
 
