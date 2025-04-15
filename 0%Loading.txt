@@ -90,7 +90,7 @@ AddButton(Tab1o, {
 
 
        AddButton(Tab2o, {
-     Name = "Fly Script",
+     Name = "Fly Script Pro",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Fly-Pro-Max"))()
   end
@@ -100,7 +100,7 @@ AddButton(Tab1o, {
 
 
        AddButton(Tab2o, {
-     Name = "AimNPC",
+     Name = "AimNPC & UnlockCam",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Dead-Rails-Aimlock-NPC.txt"))()
   end
@@ -450,7 +450,8 @@ local allowedNames = {
     ["Navy Revolver"] = true,
     ["Bolt Action Rifle"] = true,
     ["Shotgun"] = true,
-    ["Rifle"] = true
+    ["Rifle"] = true,
+    ["Sawed-Off Shotgun"] = true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
