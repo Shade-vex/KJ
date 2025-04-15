@@ -141,6 +141,52 @@ AddButton(Tab2o, {
     end
 })
 
+
+
+
+
+
+local sunEnabled = false
+local lighting = game:GetService("Lighting")
+
+local function toggleSun()
+    sunEnabled = not sunEnabled
+
+    if sunEnabled then
+        lighting.FogEnd = 1e10
+        lighting.FogStart = 1e10
+        lighting.FogColor = Color3.new(1, 1, 1)
+        lighting.Brightness = 4
+        lighting.ClockTime = 14
+        lighting.TimeOfDay = "14:00:00"
+        lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+        lighting.GlobalShadows = false
+
+        local atm = lighting:FindFirstChildOfClass("Atmosphere")
+        if atm then atm:Destroy() end
+    else
+        -- Tắt trời sáng: có thể để trống hoặc reset lại mặc định
+        lighting.FogEnd = 1000
+        lighting.FogStart = 0
+        lighting.FogColor = Color3.new(0, 0, 0)
+        lighting.Brightness = 1
+        lighting.ClockTime = 0
+        lighting.OutdoorAmbient = Color3.new(0, 0, 0)
+        lighting.GlobalShadows = true
+    end
+end
+
+AddButton(Tab2o, {
+    Name = "light",
+    Callback = function()
+        toggleSun()
+    end
+})
+
+
+
+
+
 --// Nút Bật Tọa Độ
 local coordGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
 coordGui.Name = "CoordDisplay"
@@ -179,6 +225,10 @@ AddButton(Tab2o, {
         Notify("Toạ độ", isCoordVisible and "Đã bật hiển thị tọa độ." or "Đã tắt hiển thị tọa độ.")
     end
 })
+
+
+
+
 
 
 local Player = game.Players.LocalPlayer
