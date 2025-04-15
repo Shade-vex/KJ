@@ -177,7 +177,7 @@ local function toggleSun()
 end
 
 AddButton(Tab2o, {
-    Name = "light",
+    Name = "full bright",
     Callback = function()
         toggleSun()
     end
@@ -504,7 +504,8 @@ local allowedNames = {
     ["Shotgun"] = true,
     ["Rifle"] = true,
     ["Sawed-Off Shotgun"] = true,
-    ["Cavalry Sword"] = true
+    ["Cavalry Sword"] = true,
+    ["Tomahawk"] = true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
