@@ -697,6 +697,88 @@ AddButton(Tab3o, {
 
 
 
+local espEnabled = false
+local espObjects = {}
+
+local function createUnicornESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    if not adornee then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+
+    local text = "Unicorn"
+    local colors = {
+        Color3.fromRGB(255, 0, 0),     -- U - đỏ
+        Color3.fromRGB(255, 128, 0),   -- n - cam
+        Color3.fromRGB(255, 255, 0),   -- i - vàng
+        Color3.fromRGB(0, 255, 0),     -- c - xanh lá
+        Color3.fromRGB(0, 255, 255),   -- o - xanh lơ
+        Color3.fromRGB(0, 0, 255),     -- r - xanh dương
+        Color3.fromRGB(128, 0, 255),   -- n - tím
+    }
+
+    local totalLength = #text
+    for i = 1, totalLength do
+        local charLabel = Instance.new("TextLabel")
+        charLabel.Size = UDim2.new(1 / totalLength, 0, 1, 0)
+        charLabel.Position = UDim2.new((i - 1) / totalLength, 0, 0, 0)
+        charLabel.BackgroundTransparency = 1
+        charLabel.TextColor3 = colors[i]
+        charLabel.Text = string.sub(text, i, i)
+        charLabel.Font = Enum.Font.SourceSansBold
+        charLabel.TextScaled = true
+        charLabel.Parent = billboard
+    end
+
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
+
+    spawn(function()
+        while espEnabled and adornee and adornee.Parent do
+            wait(0.2)
+        end
+        billboard:Destroy()
+    end)
+end
+
+local function toggleUnicornESP()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("Model") or obj:IsA("BasePart")) and obj.Name == "Unicorn" then
+                createUnicornESP(obj)
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("Model") or obj:IsA("BasePart")) and obj.Name == "Unicorn" then
+                createUnicornESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
+end
+
+-- Nút bật/tắt
+AddButton(Tab3o, {
+    Name = "ESP Unicorn",
+    Callback = function()
+        toggleUnicornESP()
+    end
+})
+
+
 
 local espEnabled = false -- Trạng thái bật/tắt ESP
 local espItems = {} -- Danh sách các Billboard đã tạo
