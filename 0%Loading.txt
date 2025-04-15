@@ -255,6 +255,8 @@ AddButton(
 
 
 
+   Section = AddSection(Tab3o, {"Observation Ability"})          
+
 
 
 
