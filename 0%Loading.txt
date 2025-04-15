@@ -453,7 +453,8 @@ local allowedNames = {
     ["Bolt Action Rifle"] = true,
     ["Shotgun"] = true,
     ["Rifle"] = true,
-    ["Sawed-Off Shotgun"] = true
+    ["Sawed-Off Shotgun"] = true,
+    ["Cavalry Sword"] = true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
