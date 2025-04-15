@@ -626,7 +626,7 @@ local function enableESP()
 end
 
 -- Nút bật ESP
-AddButton(Tab2o, {
+AddButton(Tab3o, {
     Name = "ESP Bond",
     Callback = function()
         enableESP()
