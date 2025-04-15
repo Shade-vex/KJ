@@ -343,6 +343,92 @@ AddButton(Tab3o, {
 
 
 
+
+
+local espEnabled = false
+local espObjects = {}
+local allowedNames = {
+    ["Vampire"] = true,
+    ["Model_RifleOutlaw"] = true,
+    ["Model_ShotgunOutlaw"] = true,
+    ["Model_Revolveroutlaw"] = true,
+    ["Model_Walker"] = true,
+    ["Model_Runner"] = true
+}
+
+local function createESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    if not adornee then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 127, 0) -- Màu cam
+    label.TextStrokeTransparency = 0.2
+    label.TextStrokeColor3 = Color3.fromRGB(255, 0, 0) -- Viền đỏ
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = target.Name
+
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
+
+    spawn(function()
+        while espEnabled and adornee and adornee.Parent do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
+                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
+            end
+            wait(0.2)
+        end
+        billboard:Destroy()
+    end)
+end
+
+local function toggleNPCEsp()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
+end
+
+-- Nút bật/tắt
+AddButton(Tab3o, {
+    Name = "ESP Monter (NPC)",
+    Callback = function()
+        toggleNPCEsp()
+    end
+})
+
+
+
+
+
 local espEnabled = false -- Trạng thái bật/tắt ESP
 local espItems = {} -- Danh sách các Billboard đã tạo
 
@@ -491,6 +577,98 @@ AddButton(Tab3o, {
         toggleAllESP()
     end
 })
+
+
+
+
+local espEnabled = false
+local espObjects = {}
+local allowedNames = {
+    ["Electrocutioner"] = true,
+    ["Jade Sword"] = true,
+    ["StrangeMask"] = true,
+    ["MaximGun"] = true
+}
+
+-- Hàm tạo màu 7 sắc cầu vồng
+local function rainbowColor(t)
+    local r = math.sin(t) * 127 + 128
+    local g = math.sin(t + 2) * 127 + 128
+    local b = math.sin(t + 4) * 127 + 128
+    return Color3.fromRGB(r, g, b)
+end
+
+local function createESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    if not adornee then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextStrokeTransparency = 0.2
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = "Vũ khí"
+
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
+
+    spawn(function()
+        local t = 0
+        while espEnabled and adornee and adornee.Parent do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
+                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
+                label.TextColor3 = rainbowColor(t)
+                t = t + 0.1
+            end
+            wait(0.1)
+        end
+        billboard:Destroy()
+    end)
+end
+
+local function toggleWeaponESP()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
+end
+
+-- Nút bật/tắt
+AddButton(Tab3o, {
+    Name = "ESP Sword & Gun",
+    Callback = function()
+        toggleWeaponESP()
+    end
+})
+
 
 
 local espEnabled = false
