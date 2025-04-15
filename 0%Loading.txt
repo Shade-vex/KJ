@@ -116,7 +116,7 @@ local isCoordVisible = false
 
 --// Nút Bật Noclip
 AddButton(Tab2o, {
-    Name = "Noclip",
+    Name = "Noclip fix bug",
     Callback = function()
         noclipEnabled = not noclipEnabled
         if noclipEnabled then
@@ -541,7 +541,8 @@ local allowedNames = {
     RevolverAmmo = true,
     RifleAmmo = true,
     ShotgunShells = true,
-    TurretAmmo = true
+    TurretAmmo = true,
+    CannonBalls = true
 }
 
 local function createESP(target)
