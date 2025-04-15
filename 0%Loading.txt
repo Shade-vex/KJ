@@ -351,7 +351,7 @@ local allowedNames = {
     ["Vampire"] = true,
     ["Model_RifleOutlaw"] = true,
     ["Model_ShotgunOutlaw"] = true,
-    ["Model_Revolveroutlaw"] = true,
+    ["Model_RevolverOutlaw"] = true,
     ["Model_Walker"] = true,
     ["Model_Runner"] = true
 }
@@ -587,7 +587,13 @@ local allowedNames = {
     ["Electrocutioner"] = true,
     ["Jade Sword"] = true,
     ["StrangeMask"] = true,
-    ["MaximGun"] = true
+    ["MaximGun"] = true,
+    ["Revolver"] = true,
+    ["Mauser"] = true,
+    ["Navy Revolver"] = true,
+    ["Bolt Action Rifle"] = true,
+    ["Shotgun"] = true,
+    ["Rifle"] = true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
@@ -676,7 +682,8 @@ local espObjects = {}
 local allowedNames = {
     RevolverAmmo = true,
     RifleAmmo = true,
-    ShotgunShells = true
+    ShotgunShells = true,
+    TurretAmmo = true
 }
 
 local function createESP(target)
@@ -750,64 +757,82 @@ AddButton(Tab3o, {
 
 
 
-local radius = 1500
-local collectNames = {
-    Bon = true,
-    Partl = true
+
+
+local espEnabled = false
+local espObjects = {}
+
+-- Tên vật phẩm muốn hiện ESP
+local allowedNames = {
+    ["Bond"] = true
 }
 
-local function createESP(part)
-    if not part then return end
+local function createESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    if not adornee then return end
 
     local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = part
-    billboard.Size = UDim2.new(0, 200, 0, 50) -- Kích thước ESP
-    billboard.StudsOffset = Vector3.new(0, 3, 0) -- Nâng lên khỏi vật phẩm
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
     billboard.AlwaysOnTop = true
 
-    local textLabel = Instance.new("TextLabel", billboard)
-    textLabel.Size = UDim2.new(1, 0, 1, 0)
-    textLabel.BackgroundTransparency = 1
-    textLabel.TextColor3 = Color3.new(1, 0, 0) -- Màu đỏ siêu đậm 
-    textLabel.TextScaled = true
-    textLabel.Font = Enum.Font.SourceSansBold
-    textLabel.TextStrokeTransparency = 0.5
-    textLabel.Text = part.Name -- Hiển thị tên vật phẩm
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(0, 255, 255) -- Màu xanh lơ
+    label.TextStrokeTransparency = 0.2
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = target.Name
 
-    billboard.Parent = part
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
+
+    spawn(function()
+        while espEnabled and adornee and adornee.Parent do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
+                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
+            end
+            wait(0.2)
+        end
+        billboard:Destroy()
+    end)
 end
 
-local function getNearbyItems()
-    local items = {}
-    local char = game.Players.LocalPlayer.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return items end
+local function toggleBondESP()
+    espEnabled = not espEnabled
 
-    local pos = char.HumanoidRootPart.Position
-
-    for _, obj in ipairs(workspace:GetDescendants()) do
-        if (obj:IsA("BasePart") or obj:IsA("Model")) and collectNames[obj.Name] then
-            local targetPart = obj:IsA("Model") and obj:FindFirstChildWhichIsA("BasePart") or obj
-            if targetPart and (pos - targetPart.Position).Magnitude <= radius then
-                table.insert(items, targetPart)
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
             end
         end
-    end
 
-    return items
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
 end
 
-local function enableESP()
-    -- Duyệt và tạo ESP cho tất cả vật phẩm trong bán kính
-    for _, item in ipairs(getNearbyItems()) do
-        createESP(item)
-    end
-end
-
--- Nút bật ESP
+-- Nút bật/tắt trong GUI
 AddButton(Tab3o, {
     Name = "ESP Bond",
     Callback = function()
-        enableESP()
+        toggleBondESP()
     end
 })
 
