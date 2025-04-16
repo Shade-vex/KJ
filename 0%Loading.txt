@@ -225,33 +225,48 @@ AddButton(Tab2o, {
 
 
 
+
 local sunEnabled = false
 local lighting = game:GetService("Lighting")
+local RunService = game:GetService("RunService")
+
+local function applyFullBright()
+    lighting.FogEnd = 1e10
+    lighting.FogStart = 1e10
+    lighting.FogColor = Color3.new(1, 1, 1)
+    lighting.Brightness = 4
+    lighting.ClockTime = 14
+    lighting.TimeOfDay = "14:00:00"
+    lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+    lighting.GlobalShadows = false
+
+    local atm = lighting:FindFirstChildOfClass("Atmosphere")
+    if atm then atm:Destroy() end
+end
+
+local function resetLighting()
+    lighting.FogEnd = 1000
+    lighting.FogStart = 0
+    lighting.FogColor = Color3.new(0, 0, 0)
+    lighting.Brightness = 1
+    lighting.ClockTime = 0
+    lighting.OutdoorAmbient = Color3.new(0, 0, 0)
+    lighting.GlobalShadows = true
+end
+
+local connection
 
 local function toggleSun()
     sunEnabled = not sunEnabled
 
     if sunEnabled then
-        lighting.FogEnd = 1e10
-        lighting.FogStart = 1e10
-        lighting.FogColor = Color3.new(1, 1, 1)
-        lighting.Brightness = 4
-        lighting.ClockTime = 14
-        lighting.TimeOfDay = "14:00:00"
-        lighting.OutdoorAmbient = Color3.new(1, 1, 1)
-        lighting.GlobalShadows = false
-
-        local atm = lighting:FindFirstChildOfClass("Atmosphere")
-        if atm then atm:Destroy() end
+        applyFullBright()
+        connection = RunService.RenderStepped:Connect(function()
+            applyFullBright()
+        end)
     else
-        -- Tắt trời sáng: có thể để trống hoặc reset lại mặc định
-        lighting.FogEnd = 1000
-        lighting.FogStart = 0
-        lighting.FogColor = Color3.new(0, 0, 0)
-        lighting.Brightness = 1
-        lighting.ClockTime = 0
-        lighting.OutdoorAmbient = Color3.new(0, 0, 0)
-        lighting.GlobalShadows = true
+        if connection then connection:Disconnect() end
+        resetLighting()
     end
 end
 
