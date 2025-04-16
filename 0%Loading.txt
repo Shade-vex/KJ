@@ -160,6 +160,15 @@ AddButton(Tab2o, {
 
 
        AddButton(Tab2o, {
+     Name = "Teleport to Cannon",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.01%25loading.txt"))()
+  end
+  })
+
+
+
+       AddButton(Tab2o, {
      Name = "Fly Script Pro",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Fly-Pro-Max"))()
