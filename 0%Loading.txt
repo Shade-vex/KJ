@@ -405,7 +405,8 @@ local allowedNames = {
     ["Model_ShotgunOutlaw"] = true,
     ["Model_RevolverOutlaw"] = true,
     ["Model_Walker"] = true,
-    ["Model_Runner"] = true
+    ["Model_Runner"] = true,
+    ["Werewolf"] = true
 }
 
 local function createESP(target)
@@ -505,7 +506,8 @@ local allowedNames = {
     ["Rifle"] = true,
     ["Sawed-Off Shotgun"] = true,
     ["Cavalry Sword"] = true,
-    ["Tomahawk"] = true
+    ["Tomahawk"] = true,
+    ["Cannon"] = true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
