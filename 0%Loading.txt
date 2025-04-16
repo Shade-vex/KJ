@@ -89,6 +89,56 @@ AddButton(Tab1o, {
 
 
 
+
+
+local function executeTeleportSequence()
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    -- Teleport đến BrainJar
+    local brainJar = workspace:FindFirstChild("BrainJar")
+    if brainJar and brainJar:IsA("BasePart") then
+        hrp.CFrame = brainJar.CFrame + Vector3.new(0, 5, 0)
+        task.wait(0.5)
+    end
+
+    -- Tìm Chair gần nhất trong bán kính 75m
+    local nearestChair
+    local minDist = 75
+
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("Seat") and v.Name == "Chair" then
+            local dist = (v.Position - hrp.Position).Magnitude
+            if dist <= minDist then
+                minDist = dist
+                nearestChair = v
+            end
+        end
+    end
+
+    -- Teleport đến ghế và cưỡng chế ngồi
+    if nearestChair then
+        hrp.CFrame = nearestChair.CFrame + Vector3.new(0, 2.5, 0)
+        task.wait(0.2)
+        char:MoveTo(nearestChair.Position)
+    else
+        warn("Không tìm thấy ghế Chair trong bán kính 75m.")
+    end
+end
+
+-- Thêm nút vào GUI (Tab4o là tab bạn muốn đặt nút)
+AddButton(Tab2o, {
+    Name = "Teleport to BrainJar",
+    Callback = function()
+        executeTeleportSequence()
+    end
+})
+
+
+
+
+
        AddButton(Tab2o, {
      Name = "Fly Script Pro",
     Callback = function()
