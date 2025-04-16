@@ -1,0 +1,168 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TeleportService = game:GetService("TeleportService")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+-- TÌM MODEL "Cannon"
+local cannon = workspace:FindFirstChild("Cannon", true)
+if not cannon or not cannon:IsA("Model") or not cannon.PrimaryPart then
+    warn("Không tìm thấy model 'Cannon' hoặc chưa đặt PrimaryPart!")
+    return
+end
+
+local targetCFrame = cannon:GetPrimaryPartCFrame()
+local targetPos = targetCFrame.Position
+local tolerance = 5
+
+repeat task.wait() until LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+local character = LocalPlayer.Character
+local hrp = character:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+
+if setsimulationradius then
+    setsimulationradius(math.huge, math.huge)
+end
+pcall(function()
+    sethiddenproperty(LocalPlayer, "MaximumSimulationRadius", math.huge)
+    sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
+end)
+
+local function log(message)
+    print("[MultiTeleport]", message)
+end
+
+local function setPosMethod1()
+    hrp.CFrame = targetCFrame
+end
+
+local function setPosMethod2()
+    hrp.Position = targetPos
+end
+
+local function setPosMethod3()
+    character:PivotTo(targetCFrame)
+end
+
+local function setPosMethod4()
+    if character:FindFirstChild("Humanoid") then
+        character:MoveTo(targetPos)
+    end
+end
+
+local function setPosMethod5()
+    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+    if humanoid then
+        humanoid:MoveTo(targetPos)
+    end
+end
+
+local function setPosMethod6()
+    local part = Instance.new("Part")
+    part.Anchored = true
+    part.CanCollide = false
+    part.Transparency = 1
+    part.Position = targetPos
+    part.Parent = workspace
+    character:PivotTo(part.CFrame)
+    task.delay(1, function()
+        part:Destroy()
+    end)
+end
+
+local function setPosMethod7()
+    local teleportOptions = Instance.new("TeleportOptions")
+    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer, teleportOptions)
+    task.wait(1)
+    hrp.CFrame = targetCFrame
+end
+
+local function setPosMethod8()
+    if character:FindFirstChild("Humanoid") then
+        character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Physics)
+        hrp.CFrame = targetCFrame
+    end
+end
+
+local function setPosMethod9()
+    local proxy = Instance.new("Part")
+    proxy.Anchored = true
+    proxy.CanCollide = false
+    proxy.Transparency = 1
+    proxy.CFrame = targetCFrame
+    proxy.Parent = workspace
+    hrp:SetNetworkOwner(nil)
+    hrp.CFrame = proxy.CFrame
+    proxy:Destroy()
+end
+
+local function setPosMethod10()
+    hrp.Anchored = true
+    hrp.CFrame = targetCFrame
+    task.wait(0.5)
+    hrp.Anchored = false
+end
+
+local function setPosMethod11()
+    local bv = Instance.new("BodyVelocity")
+    bv.Velocity = Vector3.new(0, 0, 0)
+    bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bv.Parent = hrp
+    hrp.CFrame = targetCFrame
+    task.wait(0.1)
+    bv:Destroy()
+end
+
+local function setPosMethod12()
+    character.Archivable = true
+    local clone = character:Clone()
+    clone:PivotTo(targetCFrame)
+    character:Destroy()
+    clone.Parent = workspace
+    LocalPlayer.Character = clone
+end
+
+local function setPosMethod13()
+    RunService.Heartbeat:Wait()
+    hrp.CFrame = targetCFrame
+end
+
+local function setPosMethod14()
+    local tween = TweenService:Create(hrp, TweenInfo.new(1), {CFrame = targetCFrame})
+    tween:Play()
+    tween.Completed:Wait()
+end
+
+local function setPosMethod15()
+    character:MoveTo(targetPos)
+    repeat
+        task.wait()
+        character:MoveTo(targetPos)
+    until (hrp.Position - targetPos).Magnitude < tolerance
+end
+
+local teleportMethods = {
+    setPosMethod1,
+    setPosMethod2,
+    setPosMethod3,
+    setPosMethod4,
+    setPosMethod5,
+    setPosMethod6,
+    setPosMethod7,
+    setPosMethod8,
+    setPosMethod9,
+    setPosMethod10,
+    setPosMethod11,
+    setPosMethod12,
+    setPosMethod13,
+    setPosMethod14,
+    setPosMethod15
+}
+
+for i, method in ipairs(teleportMethods) do
+    log("Dùng phương pháp dịch chuyển #" .. i)
+    pcall(method)
+    task.wait(0.25)
+end
+
+log("Dịch chuyển hoàn tất.")
