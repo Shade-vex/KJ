@@ -95,41 +95,61 @@ local function executeTeleportSequence()
     local player = game.Players.LocalPlayer
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
 
-    -- Teleport đến BrainJar
-    local brainJar = workspace:FindFirstChild("BrainJar")
-    if brainJar and brainJar:IsA("BasePart") then
-        hrp.CFrame = brainJar.CFrame + Vector3.new(0, 5, 0)
-        task.wait(0.5)
+    local nearestBrainJar
+    local nearestBrainDist = 100000
+
+    -- Tìm BrainJar gần nhất trong phạm vi 100000m
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") and v.Name == "BrainJar" then
+            local dist = (v.Position - hrp.Position).Magnitude
+            if dist < nearestBrainDist then
+                nearestBrainDist = dist
+                nearestBrainJar = v
+            end
+        end
     end
 
-    -- Tìm Chair gần nhất trong bán kính 75m
+    if nearestBrainJar then
+        -- Dịch chuyển đến BrainJar
+        char:PivotTo(nearestBrainJar.CFrame + Vector3.new(0, 5, 0))
+        task.wait(0.5)
+    else
+        warn("Không tìm thấy BrainJar trong phạm vi.")
+        return
+    end
+
+    -- Tìm ghế Chair gần nhất trong bán kính 75m
     local nearestChair
-    local minDist = 75
+    local minChairDist = 75
 
     for _, v in ipairs(workspace:GetDescendants()) do
         if v:IsA("Seat") and v.Name == "Chair" then
             local dist = (v.Position - hrp.Position).Magnitude
-            if dist <= minDist then
-                minDist = dist
+            if dist <= minChairDist then
+                minChairDist = dist
                 nearestChair = v
             end
         end
     end
 
-    -- Teleport đến ghế và cưỡng chế ngồi
     if nearestChair then
-        hrp.CFrame = nearestChair.CFrame + Vector3.new(0, 2.5, 0)
-        task.wait(0.2)
+        -- Dịch chuyển đến ghế và ép ngồi
+        char:PivotTo(nearestChair.CFrame + Vector3.new(0, 3, 0))
+        task.wait(0.3)
         char:MoveTo(nearestChair.Position)
+        if humanoid then
+            humanoid.Sit = true
+        end
     else
         warn("Không tìm thấy ghế Chair trong bán kính 75m.")
     end
 end
 
--- Thêm nút vào GUI (Tab4o là tab bạn muốn đặt nút)
+-- Nút GUI
 AddButton(Tab2o, {
-    Name = "Teleport to BrainJar",
+    Name = "Teleport to boss",
     Callback = function()
         executeTeleportSequence()
     end
