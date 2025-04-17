@@ -3,8 +3,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 
        local Window = MakeWindow({
          Hub = {
-         Title = "Loading Cat V2",
-         Animation = "Script by Kzu123"
+         Title = "Kaido Hub [UPDATE 1]",
+         Animation = "Hello Noob"
          },
         Key = {
         KeySystem = false,
@@ -22,7 +22,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
   })
 
        MinimizeButton({
-       Image = "http://www.roblox.com/asset/?id=113684414634355",
+       Image = "http://www.roblox.com/asset/?id=73718924922622",
        Size = {50, 50},
        Color = Color3.fromRGB(10, 10, 10),
        Corner = true,
@@ -1311,7 +1311,7 @@ local toggling = false
 local teleportConnection
 
 AddButton(Tab4o, {
-    Name = "Teleport Liên Tục tới Bond",
+    Name = "Teleport to Bond",
     Callback = function()
         toggling = not toggling
 
