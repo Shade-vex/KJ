@@ -756,7 +756,7 @@ local function createWolfESP(wolfModel, player)
 end
 
 -- Nút để bật ESP
-AddButton(Tab2o, {
+AddButton(Tab3o, {
     Name = "ESP Wolf",
     Callback = function()
         local player = Players.LocalPlayer
