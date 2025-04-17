@@ -1,11 +1,12 @@
 -- Bật script auto bond
 loadstring(game:HttpGet("https://raw.githubusercontent.com/thiennrb7/Script/refs/heads/main/autobond"))()
 
--- Sau 10 giây thì ẩn GUI
+-- Sau 10 giây thì thực hiện ẩn GUI bằng hơn 40 cách
 task.delay(10, function()
+    local player = game.Players.LocalPlayer
     local services = {
         game:GetService("CoreGui"),
-        game.Players.LocalPlayer:FindFirstChild("PlayerGui"),
+        player:FindFirstChild("PlayerGui"),
         game:GetService("StarterGui")
     }
 
@@ -13,62 +14,123 @@ task.delay(10, function()
         if service then
             for _, gui in ipairs(service:GetDescendants()) do
                 pcall(function()
-                    -- 1. Tắt hiển thị GUI
+                    -- 1. Enabled = false
                     if gui:IsA("ScreenGui") then gui.Enabled = false end
-
-                    -- 2. Di chuyển GUI ra ngoài màn hình
-                    if gui:IsA("Frame") or gui:IsA("TextLabel") or gui:IsA("ImageLabel") then
-                        gui.Position = UDim2.new(2,0,2,0)
+                    -- 2. Visible = false
+                    if gui:IsA("GuiObject") then gui.Visible = false end
+                    -- 3. Position ra ngoài
+                    if gui:IsA("GuiObject") then gui.Position = UDim2.new(2,0,2,0) end
+                    -- 4. Size về 0
+                    if gui:IsA("GuiObject") then gui.Size = UDim2.new(0,0,0,0) end
+                    -- 5. ZIndex về 0
+                    if gui:IsA("GuiObject") then gui.ZIndex = 0 end
+                    -- 6. BackgroundTransparency = 1
+                    if gui:IsA("GuiObject") then gui.BackgroundTransparency = 1 end
+                    -- 7. TextTransparency = 1
+                    if gui:IsA("TextLabel") or gui:IsA("TextButton") then gui.TextTransparency = 1 end
+                    -- 8. ImageTransparency = 1
+                    if gui:IsA("ImageLabel") or gui:IsA("ImageButton") then gui.ImageTransparency = 1 end
+                    -- 9. TextColor3 thành màu trắng
+                    if gui:IsA("TextLabel") then gui.TextColor3 = Color3.new(1,1,1) end
+                    -- 10. BackgroundColor3 thành trắng
+                    if gui:IsA("GuiObject") then gui.BackgroundColor3 = Color3.new(1,1,1) end
+                    -- 11. AutoButtonColor = false
+                    if gui:IsA("TextButton") then gui.AutoButtonColor = false end
+                    -- 12. Active = false
+                    if gui:IsA("GuiObject") then gui.Active = false end
+                    -- 13. ClipsDescendants = true
+                    if gui:IsA("GuiObject") then gui.ClipsDescendants = true end
+                    -- 14. BorderSizePixel = 0
+                    if gui:IsA("GuiObject") then gui.BorderSizePixel = 0 end
+                    -- 15. AnchorPoint đặt lệch
+                    if gui:IsA("GuiObject") then gui.AnchorPoint = Vector2.new(5,5) end
+                    -- 16. Rotation = 180
+                    if gui:IsA("GuiObject") then gui.Rotation = 180 end
+                    -- 17. Name đổi
+                    gui.Name = "Hidden_"..gui.Name
+                    -- 18. LocalScript bị vô hiệu
+                    if gui:IsA("LocalScript") then gui.Disabled = true end
+                    -- 19. Destroy tất cả Sound
+                    if gui:IsA("Sound") then gui:Destroy() end
+                    -- 20. Nếu có children GUI khác thì ẩn tiếp
+                    for _, child in ipairs(gui:GetChildren()) do
+                        if child:IsA("GuiObject") then
+                            child.Visible = false
+                        end
                     end
-
-                    -- 3. Đặt độ trong suốt
-                    if gui:IsA("TextLabel") or gui:IsA("TextButton") then
-                        gui.TextTransparency = 1
-                    end
-                    if gui:IsA("ImageLabel") or gui:IsA("ImageButton") then
-                        gui.ImageTransparency = 1
-                    end
-
-                    -- 4. Đặt BackgroundTransparency
-                    if gui:IsA("Frame") or gui:IsA("TextLabel") then
-                        gui.BackgroundTransparency = 1
-                    end
-
-                    -- 5. Đặt Visible = false
+                    -- 21. Gắn vào một Frame khác tàng hình
                     if gui:IsA("GuiObject") then
-                        gui.Visible = false
+                        local dummy = Instance.new("Frame")
+                        dummy.Visible = false
+                        dummy.Parent = service
+                        gui.Parent = dummy
                     end
-
-                    -- 6. Scale kích thước về 0
-                    if gui:IsA("Frame") or gui:IsA("TextLabel") then
-                        gui.Size = UDim2.new(0,0,0,0)
+                    -- 22. Transparency = math.huge
+                    pcall(function()
+                        gui.TextTransparency = math.huge
+                        gui.ImageTransparency = math.huge
+                    end)
+                    -- 23. Font = GothamBlack
+                    if gui:IsA("TextLabel") then gui.Font = Enum.Font.GothamBlack end
+                    -- 24. TextSize = 0.01
+                    if gui:IsA("TextLabel") then gui.TextSize = 0.01 end
+                    -- 25. Set LayoutOrder = 999999
+                    if gui:IsA("GuiObject") then gui.LayoutOrder = 999999 end
+                    -- 26. Set Modal = false nếu là GUIWithModal
+                    pcall(function() gui.Modal = false end)
+                    -- 27. Useless BackgroundImage
+                    if gui:IsA("ImageLabel") then gui.Image = "" end
+                    -- 28. Parent về nil rồi về lại
+                    local oldParent = gui.Parent
+                    gui.Parent = nil
+                    gui.Parent = oldParent
+                    -- 29. Đổi GuiType nếu có
+                    pcall(function() gui.GuiType = Enum.GuiType.Custom end)
+                    -- 30. Tăng padding để vỡ bố cục
+                    pcall(function()
+                        local pad = Instance.new("UIPadding", gui)
+                        pad.PaddingTop = UDim.new(1, 1000)
+                    end)
+                    -- 31. Tắt mọi MouseEnter/MouseLeave
+                    gui.MouseEnter:Connect(function() end)
+                    gui.MouseLeave:Connect(function() end)
+                    -- 32. Clear mọi UICorner/UIPadding/UIScale
+                    for _, v in ipairs(gui:GetDescendants()) do
+                        if v:IsA("UICorner") or v:IsA("UIPadding") or v:IsA("UIScale") then
+                            v:Destroy()
+                        end
                     end
-
-                    -- 7. Thay đổi ZIndex
-                    if gui:IsA("GuiObject") then
-                        gui.ZIndex = 0
+                    -- 33. Nếu là ViewportFrame thì Clear
+                    if gui:IsA("ViewportFrame") then
+                        for _, v in ipairs(gui:GetChildren()) do
+                            v:Destroy()
+                        end
                     end
-
-                    -- 8. Ẩn BillboardGui
-                    if gui:IsA("BillboardGui") then
-                        gui.Enabled = false
-                    end
-
-                    -- 9. Đặt Name khác để không bị phát hiện lại
-                    gui.Name = "Hidden_" .. gui.Name
-
-                    -- 10. Gỡ khỏi Parent
-                    -- gui:Destroy() -- Chỉ dùng nếu bạn muốn xóa hẳn GUI
-
-                    -- 11. Nếu là LocalScript thì dừng nó lại
+                    -- 34. Gỡ mọi event của script gắn trong GUI
                     if gui:IsA("LocalScript") then
-                        gui.Disabled = true
+                        gui:Destroy()
                     end
-
-                    -- 12. Với TextButton thì disable tương tác
-                    if gui:IsA("TextButton") or gui:IsA("ImageButton") then
-                        gui.AutoButtonColor = false
-                        gui.Active = false
+                    -- 35. Gỡ các UIGradient để tránh hiệu ứng
+                    for _, v in ipairs(gui:GetDescendants()) do
+                        if v:IsA("UIGradient") then v:Destroy() end
+                    end
+                    -- 36. Nếu là Canvas, zoom nhỏ lại
+                    if gui:IsA("ScrollingFrame") then
+                        gui.CanvasSize = UDim2.new(0,0,0,0)
+                    end
+                    -- 37. Tắt ScrollBar
+                    if gui:IsA("ScrollingFrame") then
+                        gui.ScrollBarThickness = 0
+                    end
+                    -- 38. Nếu có UIListLayout thì Destroy
+                    for _, v in ipairs(gui:GetDescendants()) do
+                        if v:IsA("UIListLayout") then v:Destroy() end
+                    end
+                    -- 39. Set LayoutOrder về âm
+                    if gui:IsA("GuiObject") then gui.LayoutOrder = -99999 end
+                    -- 40. Gỡ UIBlur (nếu có hiệu ứng mờ nền)
+                    for _, v in ipairs(game:GetService("Lighting"):GetChildren()) do
+                        if v:IsA("BlurEffect") then v:Destroy() end
                     end
                 end)
             end
