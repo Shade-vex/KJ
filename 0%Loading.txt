@@ -83,6 +83,65 @@ AddButton(Tab1o, {
 
 
 
+-- Biến kiểm soát
+local autoClickEnabled = false
+local attackRange = 50 -- Tăng tầm đánh lên 50m
+
+-- Hàm Auto Click
+local function startAutoClick()
+    autoClickEnabled = not autoClickEnabled
+
+    if autoClickEnabled then
+        print("🔹 Auto Click: BẬT")
+
+        spawn(function()
+            while autoClickEnabled do
+                pcall(function()
+                    local vim = game:GetService("VirtualInputManager")
+                    vim:SendMouseButtonEvent(0, 0, 0, true, game, 0) -- Nhấp chuột
+                    wait(0.1)
+                    vim:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                end)
+                wait(0.1)
+            end
+        end)
+    else
+        print("🔹 Auto Click: TẮT")
+    end
+end
+
+-- Hàm Tăng Tầm Đánh
+local function extendHitbox()
+    local combatFramework = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
+    local combatData = getupvalues(combatFramework)[2]
+
+    if combatData and combatData.activeController then
+        local controller = combatData.activeController
+        if controller then
+            local rigLib = require(game.ReplicatedStorage.CombatFramework.RigLib)
+            rigLib.getBladeHits = function(_, targets, range)
+                return rigLib.getBladeHits(_, targets, attackRange) -- Tăng tầm đánh lên 50m
+            end
+        end
+    end
+end
+
+-- Kết hợp Auto Click + Tăng Tầm Đánh
+local function toggleAutoAttack()
+    startAutoClick() -- Bật Auto Click
+    extendHitbox() -- Tăng tầm đánh
+end
+
+-- Thêm nút bật/tắt vào menu
+AddButton(Tab2o, {
+    Name = "Auto Attack (melee)",
+    Callback = function()
+        toggleAutoAttack()
+    end
+})
+
+
+
 
 
        AddButton(Tab2o, {
