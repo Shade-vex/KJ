@@ -710,63 +710,79 @@ AddButton(Tab3o, {
 
 
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
+local espEnabled = false
+local espObjects = {}
+local allowedNames = {
+    ["Wolf"] = true
+}
 
-local function createWolfESP(wolfModel, player)
-    -- Tạo ESP cho mô hình Wolf
-    local espPart = Instance.new("Part")
-    espPart.Size = wolfModel:GetExtentsSize()
-    espPart.CFrame = wolfModel.PrimaryPart.CFrame
-    espPart.Anchored = true
-    espPart.CanCollide = false
-    espPart.Transparency = 0.5
-    espPart.Color = Color3.fromRGB(169, 169, 169) -- Màu xám
-    espPart.Parent = Workspace
+local function createESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    if not adornee then return end
 
-    -- Thêm hiệu ứng phát sáng
-    local glow = Instance.new("PointLight")
-    glow.Parent = espPart
-    glow.Range = 15
-    glow.Brightness = 10
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
 
-    -- Cập nhật vị trí theo wolfModel và hiển thị khoảng cách
-    local distanceText = Instance.new("BillboardGui")
-    distanceText.Adornee = espPart
-    distanceText.Size = UDim2.new(0, 100, 0, 50)
-    distanceText.StudsOffset = Vector3.new(0, 3, 0)  -- Vị trí văn bản cách trên model
-    distanceText.Parent = espPart
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(169, 169, 169) -- Màu xám
+    label.TextStrokeTransparency = 1 -- Không viền
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = target.Name
 
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 1, 0)
-    textLabel.TextScaled = true
-    textLabel.BackgroundTransparency = 1
-    textLabel.TextColor3 = Color3.new(1, 1, 1)
-    textLabel.Parent = distanceText
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
 
-    -- Cập nhật văn bản với khoảng cách
-    RunService.Heartbeat:Connect(function()
-        espPart.CFrame = wolfModel.PrimaryPart.CFrame
-        local distance = (wolfModel.PrimaryPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-        textLabel.Text = string.format("Distance: %.1f m", distance)
+    spawn(function()
+        while espEnabled and adornee and adornee.Parent do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
+                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
+            end
+            wait(0.2)
+        end
+        billboard:Destroy()
     end)
-
-    return espPart
 end
 
--- Nút để bật ESP
+local function toggleWolfEsp()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
+end
+
+-- Nút bật/tắt
 AddButton(Tab3o, {
     Name = "ESP Wolf",
     Callback = function()
-        local player = Players.LocalPlayer
-        for _, obj in pairs(Workspace:GetChildren()) do
-            if obj.Name == "Wolf" and obj:IsA("Model") then
-                createWolfESP(obj, player)
-            end
-        end
+        toggleWolfEsp()
     end
-})
+})                      
 
 
 
