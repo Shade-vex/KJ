@@ -1,6 +1,6 @@
 -- Dữ liệu key và thời gian
 local fileName = "keyData.txt"
-local correctKey = "Loading-Cat-V2-by-Kzu123"
+local correctKey = "Kaido-Hub-[UPDATE]-VIP-PRO"
 local keyValidTime = 86400 -- 24h
 
 -- Hàm kiểm tra và đọc key từ file
@@ -94,3 +94,4 @@ CheckKeyButton.MouseButton1Click:Connect(function()
 		KeyBox.Text = "Key không đúng!"
 	end
 end)
+
