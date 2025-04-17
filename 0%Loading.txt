@@ -820,7 +820,7 @@ local allowedNames = {
     ["Cannon"] = true,
     ["Vampire Knife"] = true,
     ["Holy Water"] = true,
-    ["Crucifix"] true
+    ["Crucifix"] = true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
