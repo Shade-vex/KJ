@@ -35,7 +35,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
      local Tab1o = MakeTab({Name = "Discord"})
      local Tab2o = MakeTab({Name = "Main Script"})
      local Tab3o = MakeTab({Name = "Vision"})
-     local Tab4o = MakeTab({Name = "Setting"})
+     local Tab4o = MakeTab({Name = "Teleport"})
+     local Tab5o = MakeTab({Name = "Setting"})
 
 
 ----- Discord
@@ -80,91 +81,7 @@ AddButton(Tab1o, {
   })
 
 
-       AddButton(Tab2o, {
-     Name = "Teleport to End",
-    Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
-  end
-  })
 
-
-
-
-
-local function executeTeleportSequence()
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
-
-    local nearestBrainJar
-    local nearestBrainDist = 100000
-
-    -- Tìm BrainJar gần nhất trong phạm vi 100000m
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("BasePart") and v.Name == "BrainJar" then
-            local dist = (v.Position - hrp.Position).Magnitude
-            if dist < nearestBrainDist then
-                nearestBrainDist = dist
-                nearestBrainJar = v
-            end
-        end
-    end
-
-    if nearestBrainJar then
-        -- Dịch chuyển đến BrainJar
-        char:PivotTo(nearestBrainJar.CFrame + Vector3.new(0, 5, 0))
-        task.wait(0.5)
-    else
-        warn("Không tìm thấy BrainJar trong phạm vi.")
-        return
-    end
-
-    -- Tìm ghế Chair gần nhất trong bán kính 75m
-    local nearestChair
-    local minChairDist = 75
-
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("Seat") and v.Name == "Chair" then
-            local dist = (v.Position - hrp.Position).Magnitude
-            if dist <= minChairDist then
-                minChairDist = dist
-                nearestChair = v
-            end
-        end
-    end
-
-    if nearestChair then
-        -- Dịch chuyển đến ghế và ép ngồi
-        char:PivotTo(nearestChair.CFrame + Vector3.new(0, 3, 0))
-        task.wait(0.3)
-        char:MoveTo(nearestChair.Position)
-        if humanoid then
-            humanoid.Sit = true
-        end
-    else
-        warn("Không tìm thấy ghế Chair trong bán kính 75m.")
-    end
-end
-
--- Nút GUI
-AddButton(Tab2o, {
-    Name = "Teleport to boss",
-    Callback = function()
-        executeTeleportSequence()
-    end
-})
-
-
-
-
-
-       AddButton(Tab2o, {
-     Name = "Teleport to Cannon",
-    Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.01%25loading.txt"))()
-  end
-  })
 
 
 
@@ -1299,11 +1216,133 @@ AddButton(Tab3o, {
 
 
 
+       AddButton(Tab4o, {
+     Name = "Teleport to End",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
+  end
+  })
 
-   Section = AddSection(Tab4o, {"Chức năng Script "})
-   Section = AddSection(Tab4o, {"• Bypass Anti-cheat"})
-   Section = AddSection(Tab4o, {"• Anti-banned"})
-   Section = AddSection(Tab4o, {"• Bypass All Script"})
+
+
+
+
+local function executeTeleportSequence()
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+    local nearestBrainJar
+    local nearestBrainDist = 100000000000
+
+    -- Tìm BrainJar gần nhất trong phạm vi 1000000000000m
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") and v.Name == "BrainJar" then
+            local dist = (v.Position - hrp.Position).Magnitude
+            if dist < nearestBrainDist then
+                nearestBrainDist = dist
+                nearestBrainJar = v
+            end
+        end
+    end
+
+    if nearestBrainJar then
+        -- Dịch chuyển đến BrainJar
+        char:PivotTo(nearestBrainJar.CFrame + Vector3.new(0, 5, 0))
+        task.wait(0.5)
+    else
+        warn("Không tìm thấy BrainJar trong phạm vi.")
+        return
+    end
+
+    -- Tìm ghế Chair gần nhất trong bán kính 75m
+    local nearestChair
+    local minChairDist = 75
+
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("Seat") and v.Name == "Chair" then
+            local dist = (v.Position - hrp.Position).Magnitude
+            if dist <= minChairDist then
+                minChairDist = dist
+                nearestChair = v
+            end
+        end
+    end
+
+    if nearestChair then
+        -- Dịch chuyển đến ghế và ép ngồi
+        char:PivotTo(nearestChair.CFrame + Vector3.new(0, 3, 0))
+        task.wait(0.3)
+        char:MoveTo(nearestChair.Position)
+        if humanoid then
+            humanoid.Sit = true
+        end
+    else
+        warn("Không tìm thấy ghế Chair trong bán kính 75m.")
+    end
+end
+
+-- Nút GUI
+AddButton(Tab4o, {
+    Name = "Teleport to boss",
+    Callback = function()
+        executeTeleportSequence()
+    end
+})
+
+
+
+
+
+       AddButton(Tab4o, {
+     Name = "Teleport to Cannon",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.01%25loading.txt"))()
+  end
+  })
+
+
+
+
+
+
+local toggling = false
+local teleportConnection
+
+AddButton(Tab4o, {
+    Name = "Teleport Liên Tục tới Bond",
+    Callback = function()
+        toggling = not toggling
+
+        if toggling then
+            print("Đã bật teleport liên tục đến Bond.")
+            teleportConnection = task.spawn(function()
+                while toggling do
+                    local player = game.Players.LocalPlayer
+                    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local hrp = player.Character.HumanoidRootPart
+                        local bond = workspace:FindFirstChild("Pickups") and workspace.Pickups:FindFirstChild("Bond")
+                        if bond then
+                            hrp.CFrame = bond.CFrame
+                        end
+                    end
+                    task.wait(0.001)
+                end
+            end)
+        else
+            print("Đã tắt teleport liên tục.")
+        end
+    end
+})
+
+
+
+
+   Section = AddSection(Tab5o, {"Chức năng Script "})
+   Section = AddSection(Tab5o, {"• Bypass Anti-cheat"})
+   Section = AddSection(Tab5o, {"• Anti-banned"})
+   Section = AddSection(Tab5o, {"• Bypass All Script"})
 
 
 
