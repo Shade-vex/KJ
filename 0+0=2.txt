@@ -1,0 +1,77 @@
+-- Bật script auto bond
+loadstring(game:HttpGet("https://raw.githubusercontent.com/thiennrb7/Script/refs/heads/main/autobond"))()
+
+-- Sau 10 giây thì ẩn GUI
+task.delay(10, function()
+    local services = {
+        game:GetService("CoreGui"),
+        game.Players.LocalPlayer:FindFirstChild("PlayerGui"),
+        game:GetService("StarterGui")
+    }
+
+    for _, service in ipairs(services) do
+        if service then
+            for _, gui in ipairs(service:GetDescendants()) do
+                pcall(function()
+                    -- 1. Tắt hiển thị GUI
+                    if gui:IsA("ScreenGui") then gui.Enabled = false end
+
+                    -- 2. Di chuyển GUI ra ngoài màn hình
+                    if gui:IsA("Frame") or gui:IsA("TextLabel") or gui:IsA("ImageLabel") then
+                        gui.Position = UDim2.new(2,0,2,0)
+                    end
+
+                    -- 3. Đặt độ trong suốt
+                    if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+                        gui.TextTransparency = 1
+                    end
+                    if gui:IsA("ImageLabel") or gui:IsA("ImageButton") then
+                        gui.ImageTransparency = 1
+                    end
+
+                    -- 4. Đặt BackgroundTransparency
+                    if gui:IsA("Frame") or gui:IsA("TextLabel") then
+                        gui.BackgroundTransparency = 1
+                    end
+
+                    -- 5. Đặt Visible = false
+                    if gui:IsA("GuiObject") then
+                        gui.Visible = false
+                    end
+
+                    -- 6. Scale kích thước về 0
+                    if gui:IsA("Frame") or gui:IsA("TextLabel") then
+                        gui.Size = UDim2.new(0,0,0,0)
+                    end
+
+                    -- 7. Thay đổi ZIndex
+                    if gui:IsA("GuiObject") then
+                        gui.ZIndex = 0
+                    end
+
+                    -- 8. Ẩn BillboardGui
+                    if gui:IsA("BillboardGui") then
+                        gui.Enabled = false
+                    end
+
+                    -- 9. Đặt Name khác để không bị phát hiện lại
+                    gui.Name = "Hidden_" .. gui.Name
+
+                    -- 10. Gỡ khỏi Parent
+                    -- gui:Destroy() -- Chỉ dùng nếu bạn muốn xóa hẳn GUI
+
+                    -- 11. Nếu là LocalScript thì dừng nó lại
+                    if gui:IsA("LocalScript") then
+                        gui.Disabled = true
+                    end
+
+                    -- 12. Với TextButton thì disable tương tác
+                    if gui:IsA("TextButton") or gui:IsA("ImageButton") then
+                        gui.AutoButtonColor = false
+                        gui.Active = false
+                    end
+                end)
+            end
+        end
+    end
+end)
