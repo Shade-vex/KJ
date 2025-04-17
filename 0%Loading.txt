@@ -707,7 +707,93 @@ AddButton(Tab3o, {
 
 
 
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
+local espEnabled = false
+
+local function createWolfESP(wolfModel)
+    if wolfModel:FindFirstChild("WolfESP_Highlight") then return end
+
+    -- Highlight xám
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "WolfESP_Highlight"
+    highlight.FillColor = Color3.fromRGB(128, 128, 128)
+    highlight.OutlineColor = Color3.fromRGB(80, 80, 80)
+    highlight.FillTransparency = 0.3
+    highlight.OutlineTransparency = 0
+    highlight.Adornee = wolfModel
+    highlight.Parent = CoreGui
+
+    -- BillboardGui
+    local esp = Instance.new("BillboardGui")
+    esp.Name = "WolfESP_Label"
+    esp.Size = UDim2.new(0, 100, 0, 30)
+    esp.AlwaysOnTop = true
+    esp.StudsOffset = Vector3.new(0, 3, 0)
+    esp.Adornee = wolfModel:FindFirstChildWhichIsA("BasePart")
+    esp.Parent = CoreGui
+
+    local text = Instance.new("TextLabel")
+    text.Size = UDim2.new(1, 0, 1, 0)
+    text.BackgroundTransparency = 1
+    text.TextColor3 = Color3.fromRGB(128, 128, 128)
+    text.TextStrokeTransparency = 0
+    text.TextScaled = true
+    text.Font = Enum.Font.GothamBold
+    text.Text = "Wolf"
+    text.Parent = esp
+
+    -- Cập nhật khoảng cách
+    task.spawn(function()
+        while espEnabled and esp.Parent and highlight.Parent do
+            local char = Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = math.floor((char.HumanoidRootPart.Position - wolfModel:GetModelCFrame().Position).Magnitude)
+                text.Text = "Wolf [" .. dist .. "m]"
+            end
+            task.wait(0.5)
+        end
+    end)
+end
+
+local function clearWolfESP()
+    for _, v in ipairs(CoreGui:GetChildren()) do
+        if v.Name == "WolfESP_Highlight" or v.Name == "WolfESP_Label" then
+            v:Destroy()
+        end
+    end
+end
+
+local function toggleESP()
+    espEnabled = not espEnabled
+    if espEnabled then
+        for _, model in ipairs(workspace:GetDescendants()) do
+            if model:IsA("Model") and model.Name == "Wolf" and model:FindFirstChildWhichIsA("BasePart") then
+                createWolfESP(model)
+            end
+        end
+
+        -- Theo dõi Wolf mới sinh ra
+        workspace.DescendantAdded:Connect(function(desc)
+            if espEnabled and desc:IsA("Model") and desc.Name == "Wolf" and desc:FindFirstChildWhichIsA("BasePart") then
+                wait(0.2)
+                createWolfESP(desc)
+            end
+        end)
+    else
+        clearWolfESP()
+    end
+end
+
+-- Nút bật/tắt trong GUI (Tab3 bạn có thể đổi)
+AddButton(Tab3, {
+    Name = "ESP Wolf",
+    Callback = function()
+        toggleESP()
+    end
+})
 
 
 
@@ -732,7 +818,9 @@ local allowedNames = {
     ["Cavalry Sword"] = true,
     ["Tomahawk"] = true,
     ["Cannon"] = true,
-    ["Vampire Knife"] = true
+    ["Vampire Knife"] = true,
+    ["Holy Water"] = true,
+    ["Crucifix"] true
 }
 
 -- Hàm tạo màu 7 sắc cầu vồng
