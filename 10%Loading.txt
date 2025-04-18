@@ -1,6 +1,6 @@
 -- Dữ liệu key và thời gian
 local fileName = "keyData.txt"
-local correctKey = "Kaido-Hub-[UPDATE]-VIP-PRO"
+local correctKey = "King-Cheats-[Premium]-VIP-PRO"
 local keyValidTime = 86400 -- 24h
 
 -- Hàm kiểm tra và đọc key từ file
@@ -44,7 +44,7 @@ Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.BackgroundTransparency = 1
-Title.Text = "Kaido Hub [UPDATE] | Key System"
+Title.Text = "King Cheats [Premium] | Key System"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 18

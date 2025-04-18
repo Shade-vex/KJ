@@ -3,8 +3,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 
        local Window = MakeWindow({
          Hub = {
-         Title = "Kaido Hub [UPDATE 1]",
-         Animation = "Hello Noob"
+         Title = "King Cheats [Premium]",
+         Animation = "King Cheats [Premium]"
          },
         Key = {
         KeySystem = false,
@@ -22,7 +22,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
   })
 
        MinimizeButton({
-       Image = "http://www.roblox.com/asset/?id=73718924922622",
+       Image = "http://www.roblox.com/asset/?id=140634419386598",
        Size = {50, 50},
        Color = Color3.fromRGB(10, 10, 10),
        Corner = true,
@@ -65,10 +65,10 @@ AddButton(Tab1o, {
 })
 
 
-
-
-
-
+   Section = AddSection(Tab1o, {"Script creator"})          
+   Section = AddSection(Tab1o, {"• YanghoVN"})          
+   Section = AddSection(Tab1o, {"• Kzu123"})          
+   Section = AddSection(Tab1o, {"• RimuruHRB"})          
 
 
    Section = AddSection(Tab2o, {"Script [PRO]"})
@@ -1121,162 +1121,10 @@ AddButton(Tab3o, {
 
 
 
-local espEnabled = false -- Trạng thái bật/tắt ESP
-local espItems = {} -- Danh sách các Billboard đã tạo
-
-local function createItemESP(part)
-    if not part:IsA("BasePart") then return end
-
-    local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = part
-    billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 3, 0)
-    billboard.AlwaysOnTop = true
-
-    local label = Instance.new("TextLabel", billboard)
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextStrokeTransparency = 0.2
-    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-    label.TextSize = 18
-    label.Font = Enum.Font.SourceSansBold
-    label.Text = "ITEM"
-
-    billboard.Parent = game.CoreGui
-    table.insert(espItems, billboard)
-
-    spawn(function()
-        while espEnabled and part and part.Parent do
-            local char = game.Players.LocalPlayer.Character
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                local dist = (char.HumanoidRootPart.Position - part.Position).Magnitude
-                label.Text = string.format("%s | %dm", part.Name, math.floor(dist))
-            end
-            wait(0.2)
-        end
-        billboard:Destroy()
-    end)
-end
-
-local function toggleItemESP()
-    espEnabled = not espEnabled
-
-    if espEnabled then
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if obj:IsA("BasePart") and obj.Name:lower():match("item") then
-                createItemESP(obj)
-            end
-        end
-
-        -- Tự động thêm ESP nếu item mới xuất hiện
-        workspace.DescendantAdded:Connect(function(obj)
-            if espEnabled and obj:IsA("BasePart") and obj.Name:lower():match("item") then
-                createItemESP(obj)
-            end
-        end)
-    else
-        for _, esp in ipairs(espItems) do
-            if esp and esp.Parent then
-                esp:Destroy()
-            end
-        end
-        espItems = {}
-    end
-end
-
--- Thêm nút vào GUI
-AddButton(Tab3o, {
-    Name = "ESP Shop Item",
-    Callback = function()
-        toggleItemESP()
-    end
-})
-
-
-
-
-
-
-local espEnabled = false
-local espObjects = {}
-
-local function createESP(target)
-    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
-    if not adornee then return end
-
-    local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = adornee
-    billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 3, 0)
-    billboard.AlwaysOnTop = true
-
-    local label = Instance.new("TextLabel", billboard)
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextStrokeTransparency = 0.2
-    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-    label.TextSize = 18
-    label.Font = Enum.Font.SourceSansBold
-    label.Text = "OBJECT"
-
-    billboard.Parent = game.CoreGui
-    table.insert(espObjects, billboard)
-
-    spawn(function()
-        while espEnabled and adornee and adornee.Parent do
-            local char = game.Players.LocalPlayer.Character
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
-                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
-            end
-            wait(0.2)
-        end
-        billboard:Destroy()
-    end)
-end
-
-local function toggleAllESP()
-    espEnabled = not espEnabled
-
-    if espEnabled then
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if obj:IsA("BasePart") or obj:IsA("Model") then
-                createESP(obj)
-            end
-        end
-
-        workspace.DescendantAdded:Connect(function(obj)
-            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) then
-                createESP(obj)
-            end
-        end)
-    else
-        for _, gui in pairs(espObjects) do
-            if gui and gui.Parent then
-                gui:Destroy()
-            end
-        end
-        espObjects = {}
-    end
-end
-
--- Nút bật/tắt ESP
-AddButton(Tab3o, {
-    Name = "ESP Tất Cả Vật Thể",
-    Callback = function()
-        toggleAllESP()
-    end
-})
-
-
-
-
 
 
        AddButton(Tab4o, {
-     Name = "Teleport to End",
+     Name = "TP to End",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
   end
@@ -1285,115 +1133,59 @@ AddButton(Tab3o, {
 
 
 
-
-local function executeTeleportSequence()
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
-
-    local nearestBrainJar
-    local nearestBrainDist = 100000000000
-
-    -- Tìm BrainJar gần nhất trong phạm vi 1000000000000m
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("BasePart") and v.Name == "BrainJar" then
-            local dist = (v.Position - hrp.Position).Magnitude
-            if dist < nearestBrainDist then
-                nearestBrainDist = dist
-                nearestBrainJar = v
-            end
-        end
-    end
-
-    if nearestBrainJar then
-        -- Dịch chuyển đến BrainJar
-        char:PivotTo(nearestBrainJar.CFrame + Vector3.new(0, 5, 0))
-        task.wait(0.5)
-    else
-        warn("Không tìm thấy BrainJar trong phạm vi.")
-        return
-    end
-
-    -- Tìm ghế Chair gần nhất trong bán kính 75m
-    local nearestChair
-    local minChairDist = 75
-
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("Seat") and v.Name == "Chair" then
-            local dist = (v.Position - hrp.Position).Magnitude
-            if dist <= minChairDist then
-                minChairDist = dist
-                nearestChair = v
-            end
-        end
-    end
-
-    if nearestChair then
-        -- Dịch chuyển đến ghế và ép ngồi
-        char:PivotTo(nearestChair.CFrame + Vector3.new(0, 3, 0))
-        task.wait(0.3)
-        char:MoveTo(nearestChair.Position)
-        if humanoid then
-            humanoid.Sit = true
-        end
-    else
-        warn("Không tìm thấy ghế Chair trong bán kính 75m.")
-    end
-end
-
--- Nút GUI
-AddButton(Tab4o, {
-    Name = "Teleport to boss",
+       AddButton(Tab4o, {
+     Name = "TP to Train",
     Callback = function()
-        executeTeleportSequence()
-    end
-})
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
+  end
+  })   
 
 
 
 
 
        AddButton(Tab4o, {
-     Name = "Teleport to Cannon",
+     Name = "TP to TeslaBoss",
     Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.01%25loading.txt"))()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Tptotesla.lua.txt"))()
   end
-  })
+  })   
 
 
 
 
 
-
-local toggling = false
-local teleportConnection
-
-AddButton(Tab4o, {
-    Name = "Teleport to Bond",
+       AddButton(Tab4o, {
+     Name = "TP to Fastcastle",
     Callback = function()
-        toggling = not toggling
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/FASTCASTLE.txt"))()
+  end
+  })   
 
-        if toggling then
-            print("Đã bật teleport liên tục đến Bond.")
-            teleportConnection = task.spawn(function()
-                while toggling do
-                    local player = game.Players.LocalPlayer
-                    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                        local hrp = player.Character.HumanoidRootPart
-                        local bond = workspace:FindFirstChild("Pickups") and workspace.Pickups:FindFirstChild("Bond")
-                        if bond then
-                            hrp.CFrame = bond.CFrame
-                        end
-                    end
-                    task.wait(0.001)
-                end
-            end)
-        else
-            print("Đã tắt teleport liên tục.")
-        end
-    end
-})
+
+
+
+       AddButton(Tab4o, {
+     Name = "TP to Fort",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Tpfort.lua.txt"))()
+  end
+  })   
+
+
+
+       AddButton(Tab4o, {
+     Name = "TP to Bank",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Banktp.txt"))()
+  end
+  })   
+
+
+
+
+
+
 
 
 
