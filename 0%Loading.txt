@@ -146,64 +146,69 @@ AddButton(Tab2o, {
 
 
 
-local cameraUnlocked = false
 local runService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 local player = game.Players.LocalPlayer
 local camera = workspace.CurrentCamera
-local StarterGui = game:GetService("StarterGui")
-local cameraLoop -- biến lưu kết nối RenderStepped
 
--- Hàm đặt lại camera
-local function setCameraToHumanoid()
-    local character = player.Character
-    if character and character:FindFirstChild("Humanoid") then
-        camera.CameraSubject = character:FindFirstChild("Humanoid")
-    end
+local cameraUnlocked = false
+local cameraConnection = nil
+local characterConnection = nil
+
+local function enableUnlockCamera()
+    if cameraConnection then cameraConnection:Disconnect() end
+    if characterConnection then characterConnection:Disconnect() end
+
+    cameraConnection = runService.RenderStepped:Connect(function()
+        pcall(function()
+            if player.CameraMode ~= Enum.CameraMode.Classic then
+                player.CameraMode = Enum.CameraMode.Classic
+            end
+            local character = player.Character
+            if character and character:FindFirstChild("Humanoid") then
+                if camera.CameraSubject ~= character.Humanoid then
+                    camera.CameraSubject = character.Humanoid
+                end
+            end
+        end)
+    end)
+
+    -- Mỗi lần hồi sinh thì gắn lại camera
+    characterConnection = player.CharacterAdded:Connect(function(char)
+        wait(0.2) -- chờ nhân vật load xong
+        pcall(function()
+            player.CameraMode = Enum.CameraMode.Classic
+            local hum = char:WaitForChild("Humanoid", 2)
+            if hum then
+                camera.CameraSubject = hum
+            end
+        end)
+    end)
 end
 
--- Lắng nghe khi hồi sinh
-player.CharacterAdded:Connect(function()
-    if cameraUnlocked then
-        wait(0.1) -- chờ nhân vật load hoàn tất
-        player.CameraMode = Enum.CameraMode.Classic
-        setCameraToHumanoid()
-    end
-end)
+local function disableUnlockCamera()
+    if cameraConnection then cameraConnection:Disconnect() end
+    if characterConnection then characterConnection:Disconnect() end
+end
 
 AddButton(Tab2o, {
     Name = "Unlock Camera [Fix-Bug]",
     Callback = function()
         cameraUnlocked = not cameraUnlocked
-
         if cameraUnlocked then
             StarterGui:SetCore("SendNotification", {
                 Title = "Unlock Camera ON",
                 Text = "script by RimuruHRB",
                 Duration = 3
             })
-
-            setCameraToHumanoid()
-            player.CameraMode = Enum.CameraMode.Classic
-
-            -- Lặp giữ cho camera không bị đổi
-            cameraLoop = runService.RenderStepped:Connect(function()
-                if player.CameraMode ~= Enum.CameraMode.Classic then
-                    player.CameraMode = Enum.CameraMode.Classic
-                end
-                setCameraToHumanoid()
-            end)
-
+            enableUnlockCamera()
         else
             StarterGui:SetCore("SendNotification", {
                 Title = "Unlock Camera OFF",
                 Text = "script by RimuruHRB",
                 Duration = 3
             })
-
-            if cameraLoop then
-                cameraLoop:Disconnect()
-                cameraLoop = nil
-            end
+            disableUnlockCamera()
         end
     end
 })
