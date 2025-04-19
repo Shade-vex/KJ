@@ -144,13 +144,6 @@ AddButton(Tab2o, {
 
 
 
-       AddButton(Tab2o, {
-     Name = "Fly Script Pro",
-    Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Fly-Pro-Max"))()
-  end
-  })   
-
 
 
 
@@ -196,6 +189,53 @@ AddButton(Tab2o, {
     end
 })
 
+
+
+
+
+local cameraUnlocked = false
+local runService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local StarterGui = game:GetService("StarterGui")
+
+AddButton(Tab4o, {
+    Name = "Unlock Camera [PRO]",
+    Callback = function()
+        cameraUnlocked = not cameraUnlocked
+        
+        if cameraUnlocked then
+            -- Bật Unlock Camera
+            StarterGui:SetCore("SendNotification", {
+                Title = "Unlock Camera ON",
+                Text = "script by RimuruHRB",
+                Duration = 3
+            })
+
+            -- Bảo vệ Camera
+            runService.RenderStepped:Connect(function()
+                if player.CameraMode ~= Enum.CameraMode.Classic then
+                    player.CameraMode = Enum.CameraMode.Classic
+                end
+                if player.Character and player.Character:FindFirstChild("Humanoid") then
+                    if camera.CameraSubject ~= player.Character:FindFirstChild("Humanoid") then
+                        camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
+                    end
+                end
+            end)
+        else
+            -- Tắt Unlock Camera
+            StarterGui:SetCore("SendNotification", {
+                Title = "Unlock Camera OFF",
+                Text = "script by RimuruHRB",
+                Duration = 3
+            })
+
+            -- Ngừng bảo vệ Camera
+            runService.RenderStepped:Disconnect()
+        end
+    end
+})
 
 
 
@@ -1200,11 +1240,11 @@ AddButton(Tab3o, {
 
 
 
-   Section = AddSection(Tab5o, {"Chức năng Script "})
-   Section = AddSection(Tab5o, {"• Bypass Anti-cheat"})
-   Section = AddSection(Tab5o, {"• Anti-banned"})
+   Section = AddSection(Tab5o, {"Chức Năng Script "})
+   Section = AddSection(Tab5o, {"• Bypass Anti-Cheat"})
+   Section = AddSection(Tab5o, {"• Anti-Banned"})
    Section = AddSection(Tab5o, {"• Bypass All Script"})
-
+   Section = AddSection(Tab5o, {"• Fix Bug Script"})
 
 
 
