@@ -612,7 +612,8 @@ AddButton(Tab3o, {
 local espEnabled = false
 local espObjects = {}
 local allowedNames = {
-    ["NikolaTesla"] = true
+    ["NikolaTesla"] = true,
+    ["EasterBunny"] = true
 }
 
 local function createESP(target)
@@ -678,7 +679,7 @@ end
 
 -- Nút bật/tắt
 AddButton(Tab3o, {
-    Name = "ESP NikolaTesla",
+    Name = "ESP Final Boss",
     Callback = function()
         toggleNikolaESP()
     end
