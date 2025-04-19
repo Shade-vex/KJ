@@ -39,7 +39,7 @@ local AutoHeadshotEnabled = true    -- What this does will explain itself lol
 local AutoReloadEnabled   = false   -- What this does will explain itself lol
 local GunAuraAllMobs      = true    -- What this does will explain itself lol
 
-local SEARCH_RADIUS       = 175     -- What this does will explain itself lol
+local SEARCH_RADIUS       = 225     -- What this does will explain itself lol
 local HEADSHOT_DELAY      = 0.25    -- What this does will explain itself lol
 
 local SupportedWeapons = {
