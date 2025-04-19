@@ -159,7 +159,7 @@ local AutoHeadshotEnabled = true    -- What this does will explain itself lol
 local AutoReloadEnabled   = false   -- What this does will explain itself lol
 local GunAuraAllMobs      = true    -- What this does will explain itself lol
 
-local SEARCH_RADIUS       = 150     -- What this does will explain itself lol
+local SEARCH_RADIUS       = 250     -- What this does will explain itself lol
 local HEADSHOT_DELAY      = 0.15    -- What this does will explain itself lol
 
 local SupportedWeapons = {
@@ -288,7 +288,7 @@ end
 task.spawn(autoHeadshotLoop)
 -- Thêm nút bật/tắt Gun Aura
 AddButton(Tab2o, {
-    Name = "Gun Aura",
+    Name = "Gun Aura V2",
     Callback = function()
         GunAuraAllMobs = not GunAuraAllMobs
         if GunAuraAllMobs then
