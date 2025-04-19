@@ -147,12 +147,67 @@ AddButton(Tab2o, {
 
 
 
+local cameraUnlocked = false
+local runService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local StarterGui = game:GetService("StarterGui")
+
+AddButton(Tab2o, {
+    Name = "Unlock Camera [Fix-Bug]",
+    Callback = function()
+        cameraUnlocked = not cameraUnlocked
+        
+        if cameraUnlocked then
+            -- Bật Unlock Camera
+            StarterGui:SetCore("SendNotification", {
+                Title = "Unlock Camera ON",
+                Text = "script by RimuruHRB",
+                Duration = 3
+            })
+
+            -- Bảo vệ Camera
+            runService.RenderStepped:Connect(function()
+                if player.CameraMode ~= Enum.CameraMode.Classic then
+                    player.CameraMode = Enum.CameraMode.Classic
+                end
+                if player.Character and player.Character:FindFirstChild("Humanoid") then
+                    if camera.CameraSubject ~= player.Character:FindFirstChild("Humanoid") then
+                        camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
+                    end
+                end
+            end)
+        else
+            -- Tắt Unlock Camera
+            StarterGui:SetCore("SendNotification", {
+                Title = "Unlock Camera OFF",
+                Text = "script by RimuruHRB",
+                Duration = 3
+            })
+
+            -- Ngừng bảo vệ Camera
+            runService.RenderStepped:Disconnect()
+        end
+    end
+})
+
+
+
+
+
+
+
        AddButton(Tab2o, {
      Name = "AimNPC & UnlockCam",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Dead-Rails-Aimlock-NPC.txt"))()
   end
   })   
+
+
+
+
+
 
 --// Biến cần dùng
 local Players = game:GetService("Players")
@@ -193,49 +248,7 @@ AddButton(Tab2o, {
 
 
 
-local cameraUnlocked = false
-local runService = game:GetService("RunService")
-local player = game.Players.LocalPlayer
-local camera = workspace.CurrentCamera
-local StarterGui = game:GetService("StarterGui")
 
-AddButton(Tab4o, {
-    Name = "Unlock Camera [PRO]",
-    Callback = function()
-        cameraUnlocked = not cameraUnlocked
-        
-        if cameraUnlocked then
-            -- Bật Unlock Camera
-            StarterGui:SetCore("SendNotification", {
-                Title = "Unlock Camera ON",
-                Text = "script by RimuruHRB",
-                Duration = 3
-            })
-
-            -- Bảo vệ Camera
-            runService.RenderStepped:Connect(function()
-                if player.CameraMode ~= Enum.CameraMode.Classic then
-                    player.CameraMode = Enum.CameraMode.Classic
-                end
-                if player.Character and player.Character:FindFirstChild("Humanoid") then
-                    if camera.CameraSubject ~= player.Character:FindFirstChild("Humanoid") then
-                        camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
-                    end
-                end
-            end)
-        else
-            -- Tắt Unlock Camera
-            StarterGui:SetCore("SendNotification", {
-                Title = "Unlock Camera OFF",
-                Text = "script by RimuruHRB",
-                Duration = 3
-            })
-
-            -- Ngừng bảo vệ Camera
-            runService.RenderStepped:Disconnect()
-        end
-    end
-})
 
 
 
@@ -1161,6 +1174,9 @@ AddButton(Tab3o, {
 })
 
 
+
+
+   Section = AddSection(Tab4o, {"Teleport"})
 
 
 
