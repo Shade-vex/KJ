@@ -146,47 +146,64 @@ AddButton(Tab2o, {
 
 
 
-
 local cameraUnlocked = false
 local runService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 local camera = workspace.CurrentCamera
 local StarterGui = game:GetService("StarterGui")
+local cameraLoop -- biến lưu kết nối RenderStepped
+
+-- Hàm đặt lại camera
+local function setCameraToHumanoid()
+    local character = player.Character
+    if character and character:FindFirstChild("Humanoid") then
+        camera.CameraSubject = character:FindFirstChild("Humanoid")
+    end
+end
+
+-- Lắng nghe khi hồi sinh
+player.CharacterAdded:Connect(function()
+    if cameraUnlocked then
+        wait(0.1) -- chờ nhân vật load hoàn tất
+        player.CameraMode = Enum.CameraMode.Classic
+        setCameraToHumanoid()
+    end
+end)
 
 AddButton(Tab2o, {
     Name = "Unlock Camera [Fix-Bug]",
     Callback = function()
         cameraUnlocked = not cameraUnlocked
-        
+
         if cameraUnlocked then
-            -- Bật Unlock Camera
             StarterGui:SetCore("SendNotification", {
                 Title = "Unlock Camera ON",
                 Text = "script by RimuruHRB",
                 Duration = 3
             })
 
-            -- Bảo vệ Camera
-            runService.RenderStepped:Connect(function()
+            setCameraToHumanoid()
+            player.CameraMode = Enum.CameraMode.Classic
+
+            -- Lặp giữ cho camera không bị đổi
+            cameraLoop = runService.RenderStepped:Connect(function()
                 if player.CameraMode ~= Enum.CameraMode.Classic then
                     player.CameraMode = Enum.CameraMode.Classic
                 end
-                if player.Character and player.Character:FindFirstChild("Humanoid") then
-                    if camera.CameraSubject ~= player.Character:FindFirstChild("Humanoid") then
-                        camera.CameraSubject = player.Character:FindFirstChild("Humanoid")
-                    end
-                end
+                setCameraToHumanoid()
             end)
+
         else
-            -- Tắt Unlock Camera
             StarterGui:SetCore("SendNotification", {
                 Title = "Unlock Camera OFF",
                 Text = "script by RimuruHRB",
                 Duration = 3
             })
 
-            -- Ngừng bảo vệ Camera
-            runService.RenderStepped:Disconnect()
+            if cameraLoop then
+                cameraLoop:Disconnect()
+                cameraLoop = nil
+            end
         end
     end
 })
@@ -1181,7 +1198,7 @@ AddButton(Tab3o, {
 
 
        AddButton(Tab4o, {
-     Name = "TP to End",
+     Name = "TP to End Game",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
   end
@@ -1191,7 +1208,7 @@ AddButton(Tab3o, {
 
 
        AddButton(Tab4o, {
-     Name = "TP to Train",
+     Name = "TP to You Train",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
   end
