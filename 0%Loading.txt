@@ -155,15 +155,32 @@ local cameraUnlocked = false
 local cameraConnection = nil
 local characterConnection = nil
 
+local function forceResetCamera()
+    pcall(function()
+        -- Reset tạm
+        camera.CameraType = Enum.CameraType.Scriptable
+        wait()
+        camera.CameraType = Enum.CameraType.Custom
+
+        player.CameraMode = Enum.CameraMode.Classic
+        local hum = player.Character and player.Character:FindFirstChild("Humanoid")
+        if hum then
+            camera.CameraSubject = hum
+        end
+    end)
+end
+
 local function enableUnlockCamera()
+    forceResetCamera()
+
     if cameraConnection then cameraConnection:Disconnect() end
     if characterConnection then characterConnection:Disconnect() end
 
     cameraConnection = runService.RenderStepped:Connect(function()
         pcall(function()
-            if player.CameraMode ~= Enum.CameraMode.Classic then
-                player.CameraMode = Enum.CameraMode.Classic
-            end
+            player.CameraMode = Enum.CameraMode.Classic
+            camera.CameraType = Enum.CameraType.Custom
+
             local character = player.Character
             if character and character:FindFirstChild("Humanoid") then
                 if camera.CameraSubject ~= character.Humanoid then
@@ -173,16 +190,9 @@ local function enableUnlockCamera()
         end)
     end)
 
-    -- Mỗi lần hồi sinh thì gắn lại camera
     characterConnection = player.CharacterAdded:Connect(function(char)
-        wait(0.2) -- chờ nhân vật load xong
-        pcall(function()
-            player.CameraMode = Enum.CameraMode.Classic
-            local hum = char:WaitForChild("Humanoid", 2)
-            if hum then
-                camera.CameraSubject = hum
-            end
-        end)
+        wait(0.2)
+        forceResetCamera()
     end)
 end
 
@@ -192,7 +202,7 @@ local function disableUnlockCamera()
 end
 
 AddButton(Tab2o, {
-    Name = "Unlock Camera [Fix-Bug]",
+    Name = "Unlock Camera V2 [Fix-Bug]",
     Callback = function()
         cameraUnlocked = not cameraUnlocked
         if cameraUnlocked then
