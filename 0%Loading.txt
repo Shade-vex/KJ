@@ -1135,84 +1135,127 @@ AddButton(Tab3o, {
 
 
 
+
+
+
+
+
+
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+
 local espEnabled = false
-local espObjects = {}
+local connections = {}
 
-local function createUnicornESP(target)
-    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
-    if not adornee then return end
-
-    local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = adornee
-    billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 3, 0)
-    billboard.AlwaysOnTop = true
-
-    local text = "Unicorn"
-    local colors = {
-        Color3.fromRGB(255, 0, 0),     -- U - đỏ
-        Color3.fromRGB(255, 128, 0),   -- n - cam
-        Color3.fromRGB(255, 255, 0),   -- i - vàng
-        Color3.fromRGB(0, 255, 0),     -- c - xanh lá
-        Color3.fromRGB(0, 255, 255),   -- o - xanh lơ
-        Color3.fromRGB(0, 0, 255),     -- r - xanh dương
-        Color3.fromRGB(128, 0, 255),   -- n - tím
-    }
-
-    local totalLength = #text
-    for i = 1, totalLength do
-        local charLabel = Instance.new("TextLabel")
-        charLabel.Size = UDim2.new(1 / totalLength, 0, 1, 0)
-        charLabel.Position = UDim2.new((i - 1) / totalLength, 0, 0, 0)
-        charLabel.BackgroundTransparency = 1
-        charLabel.TextColor3 = colors[i]
-        charLabel.Text = string.sub(text, i, i)
-        charLabel.Font = Enum.Font.SourceSansBold
-        charLabel.TextScaled = true
-        charLabel.Parent = billboard
-    end
-
-    billboard.Parent = game.CoreGui
-    table.insert(espObjects, billboard)
-
-    spawn(function()
-        while espEnabled and adornee and adornee.Parent do
-            wait(0.2)
-        end
-        billboard:Destroy()
-    end)
+local function createRainbowText()
+    local label = Drawing.new("Text")
+    label.Size = 18
+    label.Center = true
+    label.Outline = true
+    label.Font = 2
+    label.Visible = false
+    return label
 end
 
-local function toggleUnicornESP()
-    espEnabled = not espEnabled
+local function getRainbowColor(offset)
+    local hue = (tick() + offset) % 7 / 7
+    return Color3.fromHSV(hue, 1, 1)
+end
 
-    if espEnabled then
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if (obj:IsA("Model") or obj:IsA("BasePart")) and obj.Name == "Unicorn" then
-                createUnicornESP(obj)
+local function getHealth(npc)
+    local hum = npc:FindFirstChildOfClass("Humanoid")
+    if hum then
+        return math.floor(hum.Health) .. " / " .. math.floor(hum.MaxHealth)
+    end
+    return "No Humanoid"
+end
+
+local function updateESP()
+    for _, v in ipairs(Workspace:GetDescendants()) do
+        if espEnabled and v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Name == "Unicorn" then
+            if not v:FindFirstChild("UnicornESPLabel") then
+                -- Tạo 3 dòng text riêng biệt cho hiệu ứng màu riêng
+                local label1 = createRainbowText() -- Unicorn
+                local label2 = createRainbowText() -- Distance
+                local label3 = createRainbowText() -- HP
+
+                label1.Name = "UnicornESPLabel"
+                label2.Name = "UnicornESPLabel"
+                label3.Name = "UnicornESPLabel"
+
+                local connection
+                connection = RunService.RenderStepped:Connect(function()
+                    if not v or not v:FindFirstChild("HumanoidRootPart") or not espEnabled then
+                        label1:Remove()
+                        label2:Remove()
+                        label3:Remove()
+                        connection:Disconnect()
+                        return
+                    end
+
+                    local hrp = v:FindFirstChild("HumanoidRootPart")
+                    local pos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
+                    local distance = (Camera.CFrame.Position - hrp.Position).Magnitude
+
+                    if onScreen and distance < 100000 then
+                        label1.Visible = true
+                        label2.Visible = true
+                        label3.Visible = true
+
+                        -- Vị trí từng dòng text
+                        label1.Position = Vector2.new(pos.X, pos.Y - 30)
+                        label2.Position = Vector2.new(pos.X, pos.Y - 15)
+                        label3.Position = Vector2.new(pos.X, pos.Y)
+
+                        -- Nội dung
+                        label1.Text = "Unicorn"
+                        label2.Text = "[" .. math.floor(distance) .. "m]"
+                        label3.Text = "HP: " .. getHealth(v)
+
+                        -- Mỗi dòng 1 màu cầu vồng riêng
+                        label1.Color = getRainbowColor(0)
+                        label2.Color = getRainbowColor(2)
+                        label3.Color = getRainbowColor(4)
+                    else
+                        label1.Visible = false
+                        label2.Visible = false
+                        label3.Visible = false
+                    end
+                end)
+
+                table.insert(connections, connection)
             end
         end
-
-        workspace.DescendantAdded:Connect(function(obj)
-            if espEnabled and (obj:IsA("Model") or obj:IsA("BasePart")) and obj.Name == "Unicorn" then
-                createUnicornESP(obj)
-            end
-        end)
-    else
-        for _, gui in pairs(espObjects) do
-            if gui and gui.Parent then
-                gui:Destroy()
-            end
-        end
-        espObjects = {}
     end
 end
 
--- Nút bật/tắt
+-- Nút bật/tắt ESP Unicorn
 AddButton(Tab3o, {
-    Name = "ESP Unicorn",
+    Name = "Esp Unicorn",
     Callback = function()
-        toggleUnicornESP()
+        espEnabled = not espEnabled
+
+        if espEnabled then
+            updateESP()
+            print("ESP Unicorn đã bật.")
+        else
+            for _, conn in pairs(connections) do
+                if typeof(conn) == "RBXScriptConnection" then
+                    conn:Disconnect()
+                end
+            end
+            connections = {}
+
+            for _, obj in ipairs(Drawing:GetObjects()) do
+                if obj.Name == "UnicornESPLabel" then
+                    obj:Remove()
+                end
+            end
+            print("ESP Unicorn đã tắt.")
+        end
     end
 })
 
