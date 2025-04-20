@@ -1220,7 +1220,7 @@ AddButton(Tab3o, {
 
 
 AddButton(Tab4o, {
-    Name = "TP to TheEnd",
+    Name = "TP to The-End",
     Callback = function()
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
@@ -1284,11 +1284,11 @@ AddButton(Tab4o, {
 
         -- Gọi lần lượt các phương pháp
         method4()
-        task.wait(0.1)
+        task.wait(0.01)
         method5()
-        task.wait(0.1)
+        task.wait(0.01)
         method6()
-        task.wait(0.1)
+        task.wait(0.01)
         method7()
     end
 })
@@ -1297,7 +1297,7 @@ AddButton(Tab4o, {
 
 
        AddButton(Tab4o, {
-     Name = "TP to YouTrain",
+     Name = "TP to You-Train",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
   end
