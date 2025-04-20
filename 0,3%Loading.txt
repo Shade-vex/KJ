@@ -1,0 +1,556 @@
+
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/refs/heads/main/menu-for-you-hub.txt")))()
+
+       local Window = MakeWindow({
+         Hub = {
+         Title = "King Cheats [Premium]",
+         Animation = "King Cheats [Premium]"
+         },
+        Key = {
+        KeySystem = false,
+        Title = "Loading Cat V2",
+        Description = "Script by Kzu123",
+        KeyLink = "https://discord.gg/DmN8sE7Y",
+        Keys = {"Loading-Cat-V2"},
+        Notifi = {
+        Notifications = true,
+        CorrectKey = "Đang chạy script...",
+       Incorrectkey = "Key không tồn tại",
+       CopyKeyLink = "Đã sao chép link",
+      }
+    }
+  })
+
+       MinimizeButton({
+       Image = "http://www.roblox.com/asset/?id=110045117913288",
+       Size = {50, 50},
+       Color = Color3.fromRGB(10, 10, 10),
+       Corner = true,
+       Stroke = false,
+       StrokeColor = Color3.fromRGB(255, 0, 0)
+      })
+      
+------ Tab
+
+     local Tab4o = MakeTab({Name = "Test"})
+
+
+
+
+
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M1 (CFrame)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)
+
+        local function resetAnchor()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.Anchored = false
+            end
+        end
+
+        local function isAtTarget()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                return (char.HumanoidRootPart.Position - targetCFrame.Position).Magnitude <= 5
+            end
+            return false
+        end
+
+        local function method1()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            resetAnchor()
+            hrp.CFrame = targetCFrame
+            task.wait(3)
+            if isAtTarget() then
+                print("[M1] Teleport thành công.")
+            else
+                print("[M1] Teleport thất bại.")
+            end
+        end
+
+        method1()
+    end
+})
+
+
+AddButton(Tab4o, {
+    Name = "M2 (BodyPosition)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local LocalPlayer = Players.LocalPlayer
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+
+        local function isAtTarget()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                return (char.HumanoidRootPart.Position - targetPosition).Magnitude <= 5
+            end
+            return false
+        end
+
+        local function method2()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            local bp = Instance.new("BodyPosition")
+            bp.Position = targetPosition
+            bp.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+            bp.P = 10000
+            bp.D = 1000
+            bp.Parent = hrp
+
+            local startTime = tick()
+            local connection
+
+            connection = RunService.Heartbeat:Connect(function()
+                if isAtTarget() or tick() - startTime > 5 then
+                    bp:Destroy()
+                    connection:Disconnect()
+                    if isAtTarget() then
+                        print("[M2] Teleport thành công.")
+                    else
+                        print("[M2] Teleport thất bại.")
+                    end
+                end
+            end)
+        end
+
+        method2()
+    end
+})
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M3 (TweenService)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local TweenService = game:GetService("TweenService")
+        local LocalPlayer = Players.LocalPlayer
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+
+        local function method3()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            local distance = (hrp.Position - targetPosition).Magnitude
+            local time = distance / 250  -- tốc độ di chuyển, có thể chỉnh
+
+            local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
+            local tween = TweenService:Create(hrp, tweenInfo, {CFrame = CFrame.new(targetPosition)})
+            tween:Play()
+
+            tween.Completed:Connect(function(status)
+                if status == Enum.PlaybackState.Completed then
+                    print("[M3] Teleport thành công.")
+                else
+                    print("[M3] Teleport bị huỷ.")
+                end
+            end)
+        end
+
+        method3()
+    end
+})
+
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M4 (SetPrimaryPartCFrame)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+
+        local function method4()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            local oldPrimary = char.PrimaryPart
+            char.PrimaryPart = hrp
+            char:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+            char.PrimaryPart = oldPrimary
+
+            print("[M4] Teleport thành công.")
+        end
+
+        method4()
+    end
+})
+
+
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M5 (SetNetworkOwner)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+
+        local function method5()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            if hrp.SetNetworkOwner then
+                pcall(function()
+                    hrp:SetNetworkOwner(LocalPlayer)
+                end)
+                hrp.CFrame = CFrame.new(targetPosition)
+                print("[M5] Teleport thành công.")
+            else
+                print("[M5] Lỗi: Không thể đặt Network Owner.")
+            end
+        end
+
+        method5()
+    end
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M6 (HookTeleport)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local TeleportService = game:GetService("TeleportService")
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+
+        local function method6()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            local oldTeleport
+            if not oldTeleport then
+                if hookfunction then
+                    oldTeleport = hookfunction(TeleportService.Teleport, function(...)
+                        print("[M6] Hook Teleport: Đã teleport.")
+                    end)
+                else
+                    print("[M6] Lỗi: Không thể hook teleport.")
+                    return
+                end
+            end
+
+            hrp.CFrame = CFrame.new(targetPosition)
+            print("[M6] Teleport thành công.")
+        end
+
+        method6()
+    end
+})
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M7 (HookTeleportAsync)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local TeleportService = game:GetService("TeleportService")
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+
+        local function method7()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
+            local oldTeleportAsync
+            if not oldTeleportAsync then
+                if hookfunction then
+                    oldTeleportAsync = hookfunction(TeleportService.TeleportAsync, function(...)
+                        print("[M7] Hook TeleportAsync: Đã teleport.")
+                    end)
+                else
+                    print("[M7] Lỗi: Không thể hook teleportAsync.")
+                    return
+                end
+            end
+
+            hrp.CFrame = CFrame.new(targetPosition)
+            print("[M7] TeleportAsync thành công.")
+        end
+
+        method7()
+    end
+})
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "M8 (HookLoadChar)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)  -- Tọa độ mục tiêu
+        local targetPos = targetCFrame.Position
+
+        local function method8()
+            local char = LocalPlayer.Character
+            if not char then return end
+
+            local oldLoadCharacter
+            if not oldLoadCharacter then
+                if hookfunction and LocalPlayer.LoadCharacter then
+                    oldLoadCharacter = hookfunction(LocalPlayer.LoadCharacter, function(...)
+                        print("[M8] Hook LoadCharacter: Đã gọi LoadCharacter.")
+                    end)
+                else
+                    print("[M8] Lỗi: Không thể hook LoadCharacter.")
+                    return
+                end
+            end
+
+            LocalPlayer:LoadCharacter()
+            task.wait(3)  -- Đợi để LoadCharacter hoàn tất
+
+            -- Đưa nhân vật đến tọa độ mục tiêu
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = targetCFrame
+                print("[M8] LoadCharacter thành công và nhân vật đã được di chuyển đến tọa độ.")
+            else
+                print("[M8] Lỗi: Không tìm thấy HumanoidRootPart trong nhân vật.")
+            end
+        end
+
+        method8()
+    end
+})
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "TP NoClip + BV",
+    Callback = function()
+        -- Tọa độ mục tiêu
+        local targetPos = Vector3.new(-424.44, 20.52, -49040.60)  -- Thay đổi tọa độ ở đây
+
+        local function isAtTarget()
+            if not hrp then return false end
+            return (hrp.Position - targetPos).Magnitude <= tolerance
+        end
+
+        local function resetAnchor()
+            hrp.Anchored = false
+        end
+
+        local function noclipFunc()
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+
+        NoclipConnection = RunService.Stepped:Connect(noclipFunc)
+        local bv = Instance.new("BodyVelocity")
+        bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+        bv.Velocity = (targetPos - hrp.Position).Unit * 100
+        bv.Parent = hrp
+        local startTime = tick()
+        local success = false
+        while tick() - startTime < 3 do
+            bv.Velocity = (targetPos - hrp.Position).Unit * 100
+            if isAtTarget() then
+                success = true
+                break
+            end
+            task.wait(0.1)
+        end
+        bv:Destroy()
+        if NoclipConnection then
+            NoclipConnection:Disconnect()
+            NoclipConnection = nil
+        end
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+        return success
+    end
+})
+
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "TP Tween",
+    Callback = function()
+        -- Tọa độ mục tiêu
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)  -- Thay đổi tọa độ ở đây
+
+        local tweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear)
+        local tween = TweenService:Create(hrp, tweenInfo, {CFrame = targetCFrame})
+        tween:Play()
+        tween.Completed:Wait()
+        return (hrp.Position - targetCFrame.Position).Magnitude <= tolerance
+    end
+})
+
+
+
+
+AddButton(Tab4o, {
+    Name = "TP PivotTo",
+    Callback = function()
+        -- Tọa độ mục tiêu
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)  -- Thay đổi tọa độ ở đây
+
+        -- Reset Anchor
+        resetAnchor()
+
+        -- Sử dụng phương thức PivotTo
+        if character.PivotTo then
+            character:PivotTo(targetCFrame)
+            task.wait(3)
+            return (hrp.Position - targetCFrame.Position).Magnitude <= tolerance
+        end
+        return false
+    end
+})
+
+
+
+
+AddButton(Tab4o, {
+    Name = "TP SetPrimaryPartCFrame",
+    Callback = function()
+        -- Tọa độ mục tiêu
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)  -- Thay đổi tọa độ ở đây
+
+        -- Reset Anchor
+        resetAnchor()
+
+        -- Sử dụng phương thức SetPrimaryPartCFrame
+        local oldPrimary = character.PrimaryPart
+        character.PrimaryPart = hrp
+        character:SetPrimaryPartCFrame(targetCFrame)
+        character.PrimaryPart = oldPrimary
+        task.wait(3)
+
+        return (hrp.Position - targetCFrame.Position).Magnitude <= tolerance
+    end
+})
+
+
+
+AddButton(Tab4o, {
+    Name = "TP HookIndex",
+    Callback = function()
+        -- Tọa độ mục tiêu
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)  -- Thay đổi tọa độ ở đây
+
+        -- Reset Anchor
+        resetAnchor()
+
+        -- Kiểm tra và áp dụng HookIndex
+        if not oldIndex and hookmetamethod then
+            oldIndex = hookmetamethod(game, "__index", function(obj, key)
+                return oldIndex(obj, key)
+            end)
+        else
+            return false
+        end
+
+        hrp.CFrame = targetCFrame  -- Dịch chuyển nhân vật đến tọa độ mục tiêu
+        task.wait(3)
+
+        return (hrp.Position - targetCFrame.Position).Magnitude <= tolerance
+    end
+})
+
+
+
+
+
+AddButton(Tab4o, {
+    Name = "TP GravityDisable",
+    Callback = function()
+        -- Tọa độ mục tiêu
+        local targetCFrame = CFrame.new(-424.44, 20.52, -49040.60)  -- Thay đổi tọa độ ở đây
+
+        -- Reset Anchor
+        resetAnchor()
+
+        -- Lưu giá trị trọng lực cũ
+        local oldGrav = workspace.Gravity
+        workspace.Gravity = 0  -- Tắt trọng lực
+
+        -- Tạo BodyVelocity để dịch chuyển
+        local bv = Instance.new("BodyVelocity")
+        bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+        bv.Velocity = (targetCFrame.Position - hrp.Position).Unit * 50
+        bv.Parent = hrp
+
+        -- Kiểm tra nếu đã đến tọa độ mục tiêu
+        local startTime = tick()
+        local success = false
+        while tick() - startTime < 3 do
+            bv.Velocity = (targetCFrame.Position - hrp.Position).Unit * 50
+            if (hrp.Position - targetCFrame.Position).Magnitude <= tolerance then
+                success = true
+                break
+            end
+            task.wait(0.1)
+        end
+
+        -- Hủy BodyVelocity và khôi phục trọng lực
+        bv:Destroy()
+        workspace.Gravity = oldGrav or 196.2
+
+        return success
+    end
+})
+
+
+
+
+
+
