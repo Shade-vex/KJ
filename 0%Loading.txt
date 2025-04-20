@@ -1219,18 +1219,85 @@ AddButton(Tab3o, {
 
 
 
-       AddButton(Tab4o, {
-     Name = "TP to End Game",
+AddButton(Tab4o, {
+    Name = "TP to TheEnd",
     Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
-  end
-  })
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local TeleportService = game:GetService("TeleportService")
+        local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
+        local char = LocalPlayer.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+        local hrp = char.HumanoidRootPart
+
+        -- M4
+        local function method4()
+            local oldPrimary = char.PrimaryPart
+            char.PrimaryPart = hrp
+            char:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+            char.PrimaryPart = oldPrimary
+            print("[M4] Teleport thành công.")
+        end
+
+        -- M5
+        local function method5()
+            if hrp.SetNetworkOwner then
+                pcall(function()
+                    hrp:SetNetworkOwner(LocalPlayer)
+                end)
+                hrp.CFrame = CFrame.new(targetPosition)
+                print("[M5] Teleport thành công.")
+            else
+                print("[M5] Lỗi: Không thể đặt Network Owner.")
+            end
+        end
+
+        -- M6
+        local function method6()
+            if hookfunction then
+                pcall(function()
+                    hookfunction(TeleportService.Teleport, function(...)
+                        print("[M6] Hook Teleport: Đã teleport.")
+                    end)
+                end)
+                hrp.CFrame = CFrame.new(targetPosition)
+                print("[M6] Teleport thành công.")
+            else
+                print("[M6] Lỗi: Không thể hook Teleport.")
+            end
+        end
+
+        -- M7
+        local function method7()
+            if hookfunction then
+                pcall(function()
+                    hookfunction(TeleportService.TeleportAsync, function(...)
+                        print("[M7] Hook TeleportAsync: Đã teleport.")
+                    end)
+                end)
+                hrp.CFrame = CFrame.new(targetPosition)
+                print("[M7] TeleportAsync thành công.")
+            else
+                print("[M7] Lỗi: Không thể hook TeleportAsync.")
+            end
+        end
+
+        -- Gọi lần lượt các phương pháp
+        method4()
+        task.wait(0.1)
+        method5()
+        task.wait(0.1)
+        method6()
+        task.wait(0.1)
+        method7()
+    end
+})
 
 
 
 
        AddButton(Tab4o, {
-     Name = "TP to You Train",
+     Name = "TP to YouTrain",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
   end
