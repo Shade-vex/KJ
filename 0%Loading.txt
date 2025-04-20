@@ -1364,7 +1364,12 @@ AddButton(Tab4o, {
 
 
 
-
+       AddButton(Tab4o, {
+     Name = "TP to Unicorn",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Test.lua.txt"))()
+  end
+  })   
 
 
 
