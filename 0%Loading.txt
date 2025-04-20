@@ -1287,13 +1287,13 @@ AddButton(Tab4o, {
         end
 
         for i = 1, 3 do
-            task.wait(0.01)
+            task.wait(0.1)
             method4()
-            task.wait(0.01)
+            task.wait(0.1)
             method5()
-            task.wait(0.01)
+            task.wait(0.1)
             method6()
-            task.wait(0.01)
+            task.wait(0.1)
             method7()
         end
 
@@ -1301,7 +1301,7 @@ AddButton(Tab4o, {
     end
 })
 
-
+         
 
 
        AddButton(Tab4o, {
