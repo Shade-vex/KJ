@@ -161,6 +161,40 @@ AddButton(Tab2o, {
 
 
 
+AddButton(Tab2o, {
+    Name = "Fly [no encryption]",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/Script/refs/heads/main/test-fly.txt"))()
+
+        -- Thông báo chính
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Script Fly [ON]",
+            Text = "Script by Dark-Web",
+            Duration = 3
+        })
+
+        -- Thông báo phụ 1
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Fly [no encryption]",
+            Text = "Dark-Web: Welcome 😈",
+            Duration = 3
+        })
+
+        -- Thông báo phụ 2
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Fly by King cheats",
+            Text = "Dark-Web: Are you ready ?",
+            Duration = 3
+        })
+    end
+})
+
+
+
+
+
+
+
 
 local runService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
@@ -1333,7 +1367,7 @@ AddButton(Tab4o, {
             print("[M7] TeleportAsync thành công.")
         end
 
-        for i = 1, 5 do
+        for i = 1, 10 do
             task.wait(0.1)
             method4()
             task.wait(0.1)
