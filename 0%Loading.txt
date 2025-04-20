@@ -1220,27 +1220,31 @@ AddButton(Tab3o, {
 
 
 AddButton(Tab4o, {
-    Name = "TP to The-End",
+    Name = "TP to End",
     Callback = function()
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
         local TeleportService = game:GetService("TeleportService")
         local targetPosition = Vector3.new(-424.44, 20.52, -49040.60)
-        local char = LocalPlayer.Character
-        if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-        local hrp = char.HumanoidRootPart
 
-        -- M4
         local function method4()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
             local oldPrimary = char.PrimaryPart
             char.PrimaryPart = hrp
             char:SetPrimaryPartCFrame(CFrame.new(targetPosition))
             char.PrimaryPart = oldPrimary
+
             print("[M4] Teleport thành công.")
         end
 
-        -- M5
         local function method5()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
             if hrp.SetNetworkOwner then
                 pcall(function()
                     hrp:SetNetworkOwner(LocalPlayer)
@@ -1252,44 +1256,48 @@ AddButton(Tab4o, {
             end
         end
 
-        -- M6
         local function method6()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
             if hookfunction then
-                pcall(function()
-                    hookfunction(TeleportService.Teleport, function(...)
-                        print("[M6] Hook Teleport: Đã teleport.")
-                    end)
+                hookfunction(TeleportService.Teleport, function(...)
+                    print("[M6] Hook Teleport: Đã teleport.")
                 end)
-                hrp.CFrame = CFrame.new(targetPosition)
-                print("[M6] Teleport thành công.")
-            else
-                print("[M6] Lỗi: Không thể hook Teleport.")
             end
+
+            hrp.CFrame = CFrame.new(targetPosition)
+            print("[M6] Teleport thành công.")
         end
 
-        -- M7
         local function method7()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = char.HumanoidRootPart
+
             if hookfunction then
-                pcall(function()
-                    hookfunction(TeleportService.TeleportAsync, function(...)
-                        print("[M7] Hook TeleportAsync: Đã teleport.")
-                    end)
+                hookfunction(TeleportService.TeleportAsync, function(...)
+                    print("[M7] Hook TeleportAsync: Đã teleport.")
                 end)
-                hrp.CFrame = CFrame.new(targetPosition)
-                print("[M7] TeleportAsync thành công.")
-            else
-                print("[M7] Lỗi: Không thể hook TeleportAsync.")
             end
+
+            hrp.CFrame = CFrame.new(targetPosition)
+            print("[M7] TeleportAsync thành công.")
         end
 
-        -- Gọi lần lượt các phương pháp
-        method4()
-        task.wait(0.01)
-        method5()
-        task.wait(0.01)
-        method6()
-        task.wait(0.01)
-        method7()
+        for i = 1, 3 do
+            task.wait(0.01)
+            method4()
+            task.wait(0.01)
+            method5()
+            task.wait(0.01)
+            method6()
+            task.wait(0.01)
+            method7()
+        end
+
+        print("Tất cả phương pháp đã chạy xong 3 lần.")
     end
 })
 
@@ -1297,7 +1305,7 @@ AddButton(Tab4o, {
 
 
        AddButton(Tab4o, {
-     Name = "TP to You-Train",
+     Name = "TP to You Train",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
   end
