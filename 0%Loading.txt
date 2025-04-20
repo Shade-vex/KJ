@@ -49,7 +49,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 AddButton(Tab1o, {
     Name = "Discord",
     Callback = function()
-        local url = "https://discord.gg/dgASGNpW" 
+        local url = "https://discord.gg/vts37ePM" 
 
         -- Mở link trên trình duyệt bằng setclipboard
         setclipboard(url)
@@ -1392,7 +1392,7 @@ AddButton(Tab4o, {
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0.1%25loading.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to End [ON]",
+            Title = "TP to End",
             Text = "Script by YanghoVN",
             Duration = 3
         })
@@ -1408,7 +1408,7 @@ AddButton(Tab4o, {
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Train [ON]",
+            Title = "TP to Train",
             Text = "Script by YanghoVN",
             Duration = 3
         })
@@ -1424,7 +1424,7 @@ AddButton(Tab4o, {
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Tptotesla.lua.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Tesla Lab [ON]",
+            Title = "TP to Tesla Lab",
             Text = "Script by YanghoVN",
             Duration = 3
         })
@@ -1440,7 +1440,7 @@ AddButton(Tab4o, {
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/FASTCASTLE.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Fastcastle [ON]",
+            Title = "TP to Fastcastle",
             Text = "Script by YanghoVN",
             Duration = 3
         })
@@ -1455,7 +1455,7 @@ AddButton(Tab4o, {
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Tpfort.lua.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Fort [ON]",
+            Title = "TP to Fort",
             Text = "Script by YanghoVN",
             Duration = 3
         })
@@ -1473,12 +1473,28 @@ AddButton(Tab4o, {
 
 
 
+
+AddButton(Tab4o, {
+    Name = "TP to Farm",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/tptofarm.lua.txt"))()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "TP to Farm",
+            Text = "Script by YanghoVN",
+            Duration = 3
+        })
+    end
+})
+
+
+
+
 AddButton(Tab4o, {
     Name = "TP to Bank",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Banktp.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Bank [ON]",
+            Title = "TP to Bank",
             Text = "Script by YanghoVN",
             Duration = 3
         })
@@ -1493,7 +1509,7 @@ AddButton(Tab4o, {
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Test.lua.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Unicorn [ON]",
+            Title = "TP to Unicorn",
             Text = "Script by YanghoVN",
             Duration = 3
         })
