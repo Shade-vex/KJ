@@ -1184,13 +1184,14 @@ local Camera = Workspace.CurrentCamera
 local espEnabled = false
 local connections = {}
 
-local function createRainbowText()
+local function createUnicornESPText()
     local label = Drawing.new("Text")
     label.Size = 18
     label.Center = true
     label.Outline = true
     label.Font = 2
     label.Visible = false
+    label.Name = "UnicornESPLabel"
     return label
 end
 
@@ -1207,56 +1208,55 @@ local function getHealth(npc)
     return "No Humanoid"
 end
 
+-- Thêm hiệu ứng phát sáng 7 màu quanh mô hình Unicorn
+local function createGlowEffect(model)
+    local glow = Instance.new("Highlight")
+    glow.Parent = model
+    glow.FillColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
+    glow.OutlineColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
+    glow.OutlineTransparency = 0.5
+    glow.FillTransparency = 0.5
+    return glow
+end
+
+-- Ghép từ + HP + khoảng cách thành 1 dòng
 local function updateESP()
     for _, v in ipairs(Workspace:GetDescendants()) do
         if espEnabled and v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Name == "Unicorn" then
             if not v:FindFirstChild("UnicornESPLabel") then
-                -- Tạo 3 dòng text riêng biệt cho hiệu ứng màu riêng
-                local label1 = createRainbowText() -- Unicorn
-                local label2 = createRainbowText() -- Distance
-                local label3 = createRainbowText() -- HP
-
-                label1.Name = "UnicornESPLabel"
-                label2.Name = "UnicornESPLabel"
-                label3.Name = "UnicornESPLabel"
-
+                local label = createUnicornESPText()
+                local glowEffect = createGlowEffect(v)  -- Áp dụng hiệu ứng phát sáng
                 local connection
+
                 connection = RunService.RenderStepped:Connect(function()
                     if not v or not v:FindFirstChild("HumanoidRootPart") or not espEnabled then
-                        label1:Remove()
-                        label2:Remove()
-                        label3:Remove()
+                        label:Remove()
+                        glowEffect:Destroy()
                         connection:Disconnect()
                         return
                     end
 
                     local hrp = v:FindFirstChild("HumanoidRootPart")
                     local pos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-                    local distance = (Camera.CFrame.Position - hrp.Position).Magnitude
+                    local distance = math.floor((Camera.CFrame.Position - hrp.Position).Magnitude)
+                    local hp = getHealth(v)
 
                     if onScreen and distance < 100000 then
-                        label1.Visible = true
-                        label2.Visible = true
-                        label3.Visible = true
+                        label.Visible = true
+                        label.Position = Vector2.new(pos.X, pos.Y - 30)
+                        label.Text = "Unicorn [HP: " .. hp .. "] " .. distance .. "m"
 
-                        -- Vị trí từng dòng text
-                        label1.Position = Vector2.new(pos.X, pos.Y - 30)
-                        label2.Position = Vector2.new(pos.X, pos.Y - 15)
-                        label3.Position = Vector2.new(pos.X, pos.Y)
-
-                        -- Nội dung
-                        label1.Text = "Unicorn"
-                        label2.Text = "[" .. math.floor(distance) .. "m]"
-                        label3.Text = "HP: " .. getHealth(v)
-
-                        -- Mỗi dòng 1 màu cầu vồng riêng
-                        label1.Color = getRainbowColor(0)
-                        label2.Color = getRainbowColor(2)
-                        label3.Color = getRainbowColor(4)
+                        -- Tạo hiệu ứng 7 màu cho chữ "Unicorn"
+                        local timeOffset = tick() % 7 / 7
+                        label.Color = getRainbowColor(timeOffset)
+                        
+                        -- Cập nhật màu sắc cho hiệu ứng phát sáng
+                        glowEffect.FillColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
+                        glowEffect.OutlineColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
                     else
-                        label1.Visible = false
-                        label2.Visible = false
-                        label3.Visible = false
+                        label.Visible = false
+                        glowEffect.FillColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
+                        glowEffect.OutlineColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
                     end
                 end)
 
