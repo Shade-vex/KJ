@@ -727,6 +727,104 @@ AddButton(Tab3o, {
 
 
 
+
+
+local espEnabled = false
+local espObjects = {}
+local allowedNames = {
+    ["Unicorn"] = true
+}
+
+local function createGlowEffect(model)
+    local glow = Instance.new("Highlight")
+    glow.Parent = model
+    glow.FillColor = Color3.fromRGB(255, 255, 255) -- Màu trắng
+    glow.OutlineColor = Color3.fromRGB(255, 255, 255) -- Màu trắng
+    glow.OutlineTransparency = 0.5
+    glow.FillTransparency = 0.5
+    return glow
+end
+
+local function createESP(target)
+    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
+    local humanoid = target:FindFirstChildWhichIsA("Humanoid")
+    if not adornee or not humanoid then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 4, 0)
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu trắng
+    label.TextStrokeTransparency = 0.2
+    label.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 20
+    label.Font = Enum.Font.SourceSansBold
+
+    billboard.Parent = game.CoreGui
+    table.insert(espObjects, billboard)
+
+    -- Tạo hiệu ứng phát sáng
+    local glow = createGlowEffect(target)
+    table.insert(espObjects, glow)
+
+    spawn(function()
+        while espEnabled and adornee and adornee.Parent and humanoid and humanoid.Health > 0 do
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
+                label.Text = string.format("%s | %d/%d HP | %dm", target.Name, humanoid.Health, humanoid.MaxHealth, math.floor(dist))
+            end
+            wait(0.2)
+        end
+        billboard:Destroy()
+        if glow and glow.Parent then
+            glow:Destroy()
+        end
+    end)
+end
+
+local function toggleUnicornESP()
+    espEnabled = not espEnabled
+
+    if espEnabled then
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if (obj:IsA("Model") or obj:IsA("BasePart")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(obj)
+            if espEnabled and (obj:IsA("Model") or obj:IsA("BasePart")) and allowedNames[obj.Name] then
+                createESP(obj)
+            end
+        end)
+    else
+        for _, gui in pairs(espObjects) do
+            if gui and gui.Parent then
+                gui:Destroy()
+            end
+        end
+        espObjects = {}
+    end
+end
+
+-- Nút bật/tắt
+AddButton(Tab3o, {
+    Name = "ESP Unicorn",
+    Callback = function()
+        toggleUnicornESP()
+    end
+})
+
+
+
+
+
 local espEnabled = false
 local espObjects = {}
 local allowedNames = {
@@ -1175,123 +1273,7 @@ AddButton(Tab3o, {
 
 
 
-local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Camera = Workspace.CurrentCamera
 
-local espEnabled = false
-local connections = {}
-
-local function createUnicornESPText()
-    local label = Drawing.new("Text")
-    label.Size = 18
-    label.Center = true
-    label.Outline = true
-    label.Font = 2
-    label.Visible = false
-    label.Name = "UnicornESPLabel"
-    return label
-end
-
-local function getRainbowColor(offset)
-    local hue = (tick() + offset) % 7 / 7
-    return Color3.fromHSV(hue, 1, 1)
-end
-
-local function getHealth(npc)
-    local hum = npc:FindFirstChildOfClass("Humanoid")
-    if hum then
-        return math.floor(hum.Health) .. " / " .. math.floor(hum.MaxHealth)
-    end
-    return "No Humanoid"
-end
-
--- Thêm hiệu ứng phát sáng 7 màu quanh mô hình Unicorn
-local function createGlowEffect(model)
-    local glow = Instance.new("Highlight")
-    glow.Parent = model
-    glow.FillColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
-    glow.OutlineColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
-    glow.OutlineTransparency = 0.5
-    glow.FillTransparency = 0.5
-    return glow
-end
-
--- Ghép từ + HP + khoảng cách thành 1 dòng
-local function updateESP()
-    for _, v in ipairs(Workspace:GetDescendants()) do
-        if espEnabled and v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v.Name == "Unicorn" then
-            if not v:FindFirstChild("UnicornESPLabel") then
-                local label = createUnicornESPText()
-                local glowEffect = createGlowEffect(v)  -- Áp dụng hiệu ứng phát sáng
-                local connection
-
-                connection = RunService.RenderStepped:Connect(function()
-                    if not v or not v:FindFirstChild("HumanoidRootPart") or not espEnabled then
-                        label:Remove()
-                        glowEffect:Destroy()
-                        connection:Disconnect()
-                        return
-                    end
-
-                    local hrp = v:FindFirstChild("HumanoidRootPart")
-                    local pos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-                    local distance = math.floor((Camera.CFrame.Position - hrp.Position).Magnitude)
-                    local hp = getHealth(v)
-
-                    if onScreen and distance < 100000 then
-                        label.Visible = true
-                        label.Position = Vector2.new(pos.X, pos.Y - 30)
-                        label.Text = "Unicorn [HP: " .. hp .. "] " .. distance .. "m"
-
-                        -- Tạo hiệu ứng 7 màu cho chữ "Unicorn"
-                        local timeOffset = tick() % 7 / 7
-                        label.Color = getRainbowColor(timeOffset)
-                        
-                        -- Cập nhật màu sắc cho hiệu ứng phát sáng
-                        glowEffect.FillColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
-                        glowEffect.OutlineColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
-                    else
-                        label.Visible = false
-                        glowEffect.FillColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
-                        glowEffect.OutlineColor = Color3.fromHSV(tick() % 7 / 7, 1, 1)
-                    end
-                end)
-
-                table.insert(connections, connection)
-            end
-        end
-    end
-end
-
--- Nút bật/tắt ESP Unicorn
-AddButton(Tab3o, {
-    Name = "Esp Unicorn",
-    Callback = function()
-        espEnabled = not espEnabled
-
-        if espEnabled then
-            updateESP()
-            print("ESP Unicorn đã bật.")
-        else
-            for _, conn in pairs(connections) do
-                if typeof(conn) == "RBXScriptConnection" then
-                    conn:Disconnect()
-                end
-            end
-            connections = {}
-
-            for _, obj in ipairs(Drawing:GetObjects()) do
-                if obj.Name == "UnicornESPLabel" then
-                    obj:Remove()
-                end
-            end
-            print("ESP Unicorn đã tắt.")
-        end
-    end
-})
 
 
 
@@ -1525,6 +1507,7 @@ AddButton(Tab4o, {
    Section = AddSection(Tab5o, {"• Anti-Banned"})
    Section = AddSection(Tab5o, {"• Bypass All Script"})
    Section = AddSection(Tab5o, {"• Fix Bug Script"})
+
 
 
 
