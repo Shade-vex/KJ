@@ -1,0 +1,141 @@
+-- Tạo GUI chính
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "HappyCheats"
+gui.ResetOnSpawn = false
+
+-- Khung chính
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 300, 0, 160)
+frame.Position = UDim2.new(0.5, -150, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Name = "MainFrame"
+frame.ClipsDescendants = true
+frame.BackgroundTransparency = 0.1
+frame.AnchorPoint = Vector2.new(0.5, 0)
+frame.ZIndex = 2
+frame:SetAttribute("Visible", true)
+
+-- Bo góc
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 10)
+
+-- Tiêu đề
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Happy cheats"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+
+-- Nút X
+local close = Instance.new("TextButton", frame)
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(1, -35, 0, 0)
+close.Text = "X"
+close.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+close.TextColor3 = Color3.new(1, 1, 1)
+local closeCorner = Instance.new("UICorner", close)
+closeCorner.CornerRadius = UDim.new(0, 8)
+
+-- Input box
+local input = Instance.new("TextBox", frame)
+input.Size = UDim2.new(1, -20, 0, 30)
+input.Position = UDim2.new(0, 10, 0, 40)
+input.PlaceholderText = "Tên model NPC"
+input.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+input.TextColor3 = Color3.fromRGB(255, 255, 255)
+input.Font = Enum.Font.Gotham
+input.TextSize = 14
+local inputCorner = Instance.new("UICorner", input)
+inputCorner.CornerRadius = UDim.new(0, 6)
+
+-- Nút Dark
+local darkBtn = Instance.new("TextButton", frame)
+darkBtn.Size = UDim2.new(0.45, 0, 0, 30)
+darkBtn.Position = UDim2.new(0.05, 0, 0, 80)
+darkBtn.Text = "Dark"
+darkBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+darkBtn.TextColor3 = Color3.new(1, 1, 1)
+local darkCorner = Instance.new("UICorner", darkBtn)
+darkCorner.CornerRadius = UDim.new(0, 6)
+
+-- Nút Remove
+local removeBtn = Instance.new("TextButton", frame)
+removeBtn.Size = UDim2.new(0.45, 0, 0, 30)
+removeBtn.Position = UDim2.new(0.5, 0, 0, 80)
+removeBtn.Text = "Remove"
+removeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+removeBtn.TextColor3 = Color3.new(1, 1, 1)
+local removeCorner = Instance.new("UICorner", removeBtn)
+removeCorner.CornerRadius = UDim.new(0, 6)
+
+-- Dark Aura
+local function addDarkAura(model)
+	if not model:FindFirstChild("DarkAura") then
+		local aura = Instance.new("ParticleEmitter")
+		aura.Name = "DarkAura"
+		aura.Texture = "rbxassetid://241837157"
+		aura.Color = ColorSequence.new(Color3.new(0, 0, 0))
+		aura.LightEmission = 0
+		aura.Size = NumberSequence.new(2)
+		aura.Rate = 50
+		aura.Speed = NumberRange.new(0, 0)
+		aura.Lifetime = NumberRange.new(1)
+		aura.Parent = model:FindFirstChildWhichIsA("BasePart") or model
+	end
+end
+
+-- Remove Aura
+local function removeDarkAura(model)
+	local aura = model:FindFirstChild("DarkAura", true)
+	if aura then
+		aura:Destroy()
+	end
+end
+
+-- Nút Dark
+darkBtn.MouseButton1Click:Connect(function()
+	local name = input.Text
+	local found = workspace:FindFirstChild(name)
+	if found then
+		addDarkAura(found)
+	end
+end)
+
+-- Nút Remove
+removeBtn.MouseButton1Click:Connect(function()
+	local name = input.Text
+	local found = workspace:FindFirstChild(name)
+	if found then
+		removeDarkAura(found)
+	end
+end)
+
+-- Nút X ẩn GUI
+close.MouseButton1Click:Connect(function()
+	frame.Visible = false
+
+	local flyingLabel = Instance.new("TextLabel", gui)
+	flyingLabel.Text = "Happy cheats ẩn rồi!"
+	flyingLabel.Size = UDim2.new(0, 300, 0, 40)
+	flyingLabel.Position = UDim2.new(0.5, -150, 0, 0)
+	flyingLabel.BackgroundTransparency = 1
+	flyingLabel.TextColor3 = Color3.new(1, 1, 1)
+	flyingLabel.TextSize = 22
+	flyingLabel.Font = Enum.Font.GothamBold
+	flyingLabel.AnchorPoint = Vector2.new(0.5, 0)
+	flyingLabel.ZIndex = 5
+
+	game:GetService("TweenService"):Create(flyingLabel, TweenInfo.new(2), {
+		Position = UDim2.new(0.5, -150, 0.1, 0),
+		TextTransparency = 1
+	}):Play()
+
+	wait(2)
+	flyingLabel:Destroy()
+end)
