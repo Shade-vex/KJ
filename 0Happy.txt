@@ -1,141 +1,150 @@
--- Tạo GUI chính
+-- Tạo GUI
 local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "HappyCheats"
+gui.Name = "HappyCheatsGui"
+gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 
--- Khung chính
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 300, 0, 160)
-frame.Position = UDim2.new(0.5, -150, 0.4, 0)
-frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.Size = UDim2.new(0, 300, 0, 180)
+frame.Position = UDim2.new(0.5, -150, 0.5, -90)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
-frame.Name = "MainFrame"
-frame.ClipsDescendants = true
-frame.BackgroundTransparency = 0.1
-frame.AnchorPoint = Vector2.new(0.5, 0)
-frame.ZIndex = 2
-frame:SetAttribute("Visible", true)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
 
--- Bo góc
 local corner = Instance.new("UICorner", frame)
 corner.CornerRadius = UDim.new(0, 10)
 
--- Tiêu đề
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 0)
+title.Size = UDim2.new(1, -40, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
 title.BackgroundTransparency = 1
 title.Text = "Happy cheats"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 20
+title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Nút X
-local close = Instance.new("TextButton", frame)
-close.Size = UDim2.new(0, 30, 0, 30)
-close.Position = UDim2.new(1, -35, 0, 0)
-close.Text = "X"
-close.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-close.TextColor3 = Color3.new(1, 1, 1)
-local closeCorner = Instance.new("UICorner", close)
-closeCorner.CornerRadius = UDim.new(0, 8)
-
--- Input box
-local input = Instance.new("TextBox", frame)
+local input = Instance.new("Happy cheats", frame)
+input.PlaceholderText = "Name player"
 input.Size = UDim2.new(1, -20, 0, 30)
 input.Position = UDim2.new(0, 10, 0, 40)
-input.PlaceholderText = "Tên model NPC"
 input.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 input.TextColor3 = Color3.fromRGB(255, 255, 255)
-input.Font = Enum.Font.Gotham
-input.TextSize = 14
+input.Font = Enum.Font.SourceSans
+input.TextSize = 16
+input.BorderSizePixel = 0
+
 local inputCorner = Instance.new("UICorner", input)
 inputCorner.CornerRadius = UDim.new(0, 6)
 
--- Nút Dark
 local darkBtn = Instance.new("TextButton", frame)
-darkBtn.Size = UDim2.new(0.45, 0, 0, 30)
-darkBtn.Position = UDim2.new(0.05, 0, 0, 80)
 darkBtn.Text = "Dark"
-darkBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-darkBtn.TextColor3 = Color3.new(1, 1, 1)
+darkBtn.Size = UDim2.new(0.5, -15, 0, 30)
+darkBtn.Position = UDim2.new(0, 10, 1, -40)
+darkBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+darkBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+darkBtn.Font = Enum.Font.Gotham
+darkBtn.TextSize = 16
+
 local darkCorner = Instance.new("UICorner", darkBtn)
 darkCorner.CornerRadius = UDim.new(0, 6)
 
--- Nút Remove
 local removeBtn = Instance.new("TextButton", frame)
-removeBtn.Size = UDim2.new(0.45, 0, 0, 30)
-removeBtn.Position = UDim2.new(0.5, 0, 0, 80)
 removeBtn.Text = "Remove"
-removeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-removeBtn.TextColor3 = Color3.new(1, 1, 1)
+removeBtn.Size = UDim2.new(0.5, -15, 0, 30)
+removeBtn.Position = UDim2.new(0.5, 5, 1, -40)
+removeBtn.BackgroundColor3 = Color3.fromRGB(100, 60, 60)
+removeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+removeBtn.Font = Enum.Font.Gotham
+removeBtn.TextSize = 16
+
 local removeCorner = Instance.new("UICorner", removeBtn)
 removeCorner.CornerRadius = UDim.new(0, 6)
 
--- Dark Aura
-local function addDarkAura(model)
-	if not model:FindFirstChild("DarkAura") then
-		local aura = Instance.new("ParticleEmitter")
-		aura.Name = "DarkAura"
-		aura.Texture = "rbxassetid://241837157"
-		aura.Color = ColorSequence.new(Color3.new(0, 0, 0))
-		aura.LightEmission = 0
-		aura.Size = NumberSequence.new(2)
-		aura.Rate = 50
-		aura.Speed = NumberRange.new(0, 0)
-		aura.Lifetime = NumberRange.new(1)
-		aura.Parent = model:FindFirstChildWhichIsA("BasePart") or model
+local close = Instance.new("TextButton", frame)
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(1, -35, 0, 5)
+close.Text = "X"
+close.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+close.TextColor3 = Color3.fromRGB(255, 255, 255)
+close.Font = Enum.Font.GothamBold
+close.TextSize = 18
+
+local closeCorner = Instance.new("UICorner", close)
+closeCorner.CornerRadius = UDim.new(0, 6)
+
+-- Dark Aura cho nhân vật
+local function applyDarkAuraToCharacter(character)
+	local aura = Instance.new("ParticleEmitter")
+	aura.Name = "DarkAura"
+	aura.Color = ColorSequence.new(Color3.new(0, 0, 0))
+	aura.LightEmission = 0
+	aura.Texture = "rbxassetid://771221224"
+	aura.Size = NumberSequence.new(3)
+	aura.Rate = 50
+	aura.Lifetime = NumberRange.new(1)
+	aura.Speed = NumberRange.new(0)
+	aura.VelocitySpread = 180
+	aura.Rotation = NumberRange.new(0, 360)
+	aura.RotSpeed = NumberRange.new(-90, 90)
+
+	for _, part in ipairs(character:GetDescendants()) do
+		if part:IsA("BasePart") then
+			local newAura = aura:Clone()
+			newAura.Parent = part
+		end
 	end
 end
 
--- Remove Aura
-local function removeDarkAura(model)
-	local aura = model:FindFirstChild("DarkAura", true)
-	if aura then
-		aura:Destroy()
+local function removeDarkAuraFromCharacter(character)
+	for _, part in ipairs(character:GetDescendants()) do
+		if part:IsA("BasePart") then
+			for _, child in ipairs(part:GetChildren()) do
+				if child:IsA("ParticleEmitter") and child.Name == "DarkAura" then
+					child:Destroy()
+				end
+			end
+		end
 	end
 end
 
--- Nút Dark
+-- Khi ấn nút "Dark"
 darkBtn.MouseButton1Click:Connect(function()
-	local name = input.Text
-	local found = workspace:FindFirstChild(name)
-	if found then
-		addDarkAura(found)
+	local playerName = input.Text
+	local player = game.Players:FindFirstChild(playerName)
+	if player and player.Character then
+		applyDarkAuraToCharacter(player.Character)
 	end
 end)
 
--- Nút Remove
+-- Khi ấn nút "Remove"
 removeBtn.MouseButton1Click:Connect(function()
-	local name = input.Text
-	local found = workspace:FindFirstChild(name)
-	if found then
-		removeDarkAura(found)
+	local playerName = input.Text
+	local player = game.Players:FindFirstChild(playerName)
+	if player and player.Character then
+		removeDarkAuraFromCharacter(player.Character)
 	end
 end)
 
--- Nút X ẩn GUI
+-- Khi ấn nút X để ẩn GUI
 close.MouseButton1Click:Connect(function()
 	frame.Visible = false
 
-	local flyingLabel = Instance.new("TextLabel", gui)
-	flyingLabel.Text = "Happy cheats ẩn rồi!"
-	flyingLabel.Size = UDim2.new(0, 300, 0, 40)
-	flyingLabel.Position = UDim2.new(0.5, -150, 0, 0)
-	flyingLabel.BackgroundTransparency = 1
-	flyingLabel.TextColor3 = Color3.new(1, 1, 1)
-	flyingLabel.TextSize = 22
-	flyingLabel.Font = Enum.Font.GothamBold
-	flyingLabel.AnchorPoint = Vector2.new(0.5, 0)
-	flyingLabel.ZIndex = 5
+	local floating = Instance.new("TextButton", gui)
+	floating.Size = UDim2.new(0, 200, 0, 50)
+	floating.Position = UDim2.new(0.5, -100, 0, 0)
+	floating.Text = "Happy cheats"
+	floating.BackgroundTransparency = 1
+	floating.TextColor3 = Color3.fromRGB(255, 255, 255)
+	floating.TextSize = 20
+	floating.Font = Enum.Font.GothamBold
+	floating.ZIndex = 10
+	floating.AutoButtonColor = false
 
-	game:GetService("TweenService"):Create(flyingLabel, TweenInfo.new(2), {
-		Position = UDim2.new(0.5, -150, 0.1, 0),
-		TextTransparency = 1
-	}):Play()
-
-	wait(2)
-	flyingLabel:Destroy()
+	floating.MouseButton1Click:Connect(function()
+		frame.Visible = true
+		floating:Destroy()
+	end)
 end)
