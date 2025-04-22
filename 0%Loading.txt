@@ -3,8 +3,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 
        local Window = MakeWindow({
          Hub = {
-         Title = "Happy cheats",
-         Animation = "Happy cheats"
+         Title = "Roblox VN [Cheats]",
+         Animation = "Roblox VN [Cheats]"
          },
         Key = {
         KeySystem = false,
@@ -22,7 +22,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
   })
 
        MinimizeButton({
-       Image = "http://www.roblox.com/asset/?id=110045117913288",
+       Image = "http://www.roblox.com/asset/?id=92204837116417",
        Size = {50, 50},
        Color = Color3.fromRGB(10, 10, 10),
        Corner = true,
