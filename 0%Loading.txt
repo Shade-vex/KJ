@@ -3,8 +3,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 
        local Window = MakeWindow({
          Hub = {
-         Title = "King Cheats [Premium]",
-         Animation = "King Cheats [Premium]"
+         Title = "Happy cheats",
+         Animation = "Happy cheats"
          },
         Key = {
         KeySystem = false,
@@ -470,6 +470,18 @@ AddButton(Tab2o, {
 		toggleAura()
 	end
 })
+
+
+
+
+
+
+       AddButton(Tab2o, {
+     Name = "Aura for player",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0Happy.txt"))()
+  end
+  })   
 
 
 
