@@ -3,8 +3,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 
        local Window = MakeWindow({
          Hub = {
-         Title = "Roblox VN [Cheats]",
-         Animation = "Roblox VN [Cheats]"
+         Title = "HUHU Hub [RT3000]",
+         Animation = "HUHU Hub [RT3000]"
          },
         Key = {
         KeySystem = false,
@@ -22,7 +22,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
   })
 
        MinimizeButton({
-       Image = "http://www.roblox.com/asset/?id=92204837116417",
+       Image = "http://www.roblox.com/asset/?id=96813908648032",   
        Size = {50, 50},
        Color = Color3.fromRGB(10, 10, 10),
        Corner = true,
@@ -1519,6 +1519,8 @@ AddButton(Tab4o, {
    Section = AddSection(Tab5o, {"• Anti-Banned"})
    Section = AddSection(Tab5o, {"• Bypass All Script"})
    Section = AddSection(Tab5o, {"• Fix Bug Script"})
+
+
 
 
 
