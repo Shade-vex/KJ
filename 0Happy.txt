@@ -26,8 +26,8 @@ title.Font = Enum.Font.GothamBold
 title.TextSize = 20
 title.TextXAlignment = Enum.TextXAlignment.Left
 
-local input = Instance.new("Happy cheats", frame)
-input.PlaceholderText = "Name player"
+local input = Instance.new("TextBox", frame)
+input.PlaceholderText = "Enter Name Player Here"
 input.Size = UDim2.new(1, -20, 0, 30)
 input.Position = UDim2.new(0, 10, 0, 40)
 input.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -82,8 +82,8 @@ local function applyDarkAuraToCharacter(character)
 	aura.Color = ColorSequence.new(Color3.new(0, 0, 0))
 	aura.LightEmission = 0
 	aura.Texture = "rbxassetid://771221224"
-	aura.Size = NumberSequence.new(3)
-	aura.Rate = 50
+	aura.Size = NumberSequence.new(2.5) -- Giảm 25% kích thước
+	aura.Rate = 25 -- Giảm 50% số lượng
 	aura.Lifetime = NumberRange.new(1)
 	aura.Speed = NumberRange.new(0)
 	aura.VelocitySpread = 180
