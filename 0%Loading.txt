@@ -151,45 +151,6 @@ AddButton(Tab0o, {
 
 
 
---// Nút Bật Tọa Độ
-local coordGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-coordGui.Name = "CoordDisplay"
-coordGui.Enabled = false
-
-local label = Instance.new("TextLabel", coordGui)
-label.Size = UDim2.new(0, 300, 0, 50)
-label.Position = UDim2.new(0, 10, 0, 10)
-label.BackgroundTransparency = 0.3
-label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-label.TextColor3 = Color3.fromRGB(255, 255, 255)
-label.TextScaled = true
-label.Font = Enum.Font.SourceSansBold
-label.Text = "Tọa độ: Đang tải..."
-
-RunService.RenderStepped:Connect(function()
-    if coordGui.Enabled then
-        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            local pos = hrp.Position
-            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
-        end
-    end
-end)
-
-LocalPlayer.CharacterAdded:Connect(function()
-    coordGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-end)
-
-AddButton(Tab0o, {
-    Name = "Coordinates",
-    Callback = function()
-        isCoordVisible = not isCoordVisible
-        coordGui.Enabled = isCoordVisible
-        Notify("Toạ độ", isCoordVisible and "Đã bật hiển thị tọa độ." or "Đã tắt hiển thị tọa độ.")
-    end
-})
-
 
 
 
@@ -547,6 +508,45 @@ AddButton(Tab2o, {
 
 
 
+
+--// Nút Bật Tọa Độ
+local coordGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+coordGui.Name = "CoordDisplay"
+coordGui.Enabled = false
+
+local label = Instance.new("TextLabel", coordGui)
+label.Size = UDim2.new(0, 300, 0, 50)
+label.Position = UDim2.new(0, 10, 0, 10)
+label.BackgroundTransparency = 0.3
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSansBold
+label.Text = "Tọa độ: Đang tải..."
+
+RunService.RenderStepped:Connect(function()
+    if coordGui.Enabled then
+        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local pos = hrp.Position
+            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
+        end
+    end
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    coordGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end)
+
+AddButton(Tab2o, {
+    Name = "Coordinates",
+    Callback = function()
+        isCoordVisible = not isCoordVisible
+        coordGui.Enabled = isCoordVisible
+        Notify("Toạ độ", isCoordVisible and "Đã bật hiển thị tọa độ." or "Đã tắt hiển thị tọa độ.")
+    end
+})
 
 
 
