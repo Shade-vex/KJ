@@ -1,0 +1,151 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local userId = player.UserId
+
+local humanoid
+
+local function updateHumanoid()
+	local char = player.Character or player.CharacterAdded:Wait()
+	humanoid = char:WaitForChild("Humanoid")
+end
+
+updateHumanoid()
+
+player.CharacterAdded:Connect(function()
+	updateHumanoid()
+end)
+
+-- GUI
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "StatsGUI"
+ScreenGui.ResetOnSpawn = false
+
+-- Main Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 250, 0, 180)
+MainFrame.Position = UDim2.new(0.05, 0, 0.05, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+MainFrame.Name = "MainFrame"
+MainFrame.ClipsDescendants = true
+
+-- UICorner
+local corner = Instance.new("UICorner", MainFrame)
+corner.CornerRadius = UDim.new(0, 12)
+
+-- Close Button
+local Close = Instance.new("TextButton", MainFrame)
+Close.Text = "X"
+Close.Size = UDim2.new(0, 25, 0, 25)
+Close.Position = UDim2.new(1, -30, 0, 5)
+Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+Close.TextColor3 = Color3.new(1,1,1)
+Close.BorderSizePixel = 0
+
+-- Open Button
+local OpenButton = Instance.new("TextButton", ScreenGui)
+OpenButton.Text = "MỞ GUI"
+OpenButton.Position = UDim2.new(0.05, 0, 0.25, 0)
+OpenButton.Size = UDim2.new(0, 100, 0, 30)
+OpenButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+OpenButton.Visible = false
+OpenButton.Active = true
+OpenButton.Draggable = true
+Instance.new("UICorner", OpenButton)
+
+Close.MouseButton1Click:Connect(function()
+	MainFrame.Visible = false
+	OpenButton.Visible = true
+end)
+
+OpenButton.MouseButton1Click:Connect(function()
+	MainFrame.Visible = true
+	OpenButton.Visible = false
+end)
+
+-- Avatar Image
+local Avatar = Instance.new("ImageLabel", MainFrame)
+Avatar.Size = UDim2.new(0, 60, 0, 60)
+Avatar.Position = UDim2.new(0, 10, 0, 10)
+Avatar.BackgroundTransparency = 1
+Avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId="..userId.."&width=420&height=420&format=png"
+
+-- Player Name Label
+local NameLabel = Instance.new("TextLabel", MainFrame)
+NameLabel.Text = player.Name
+NameLabel.Position = UDim2.new(0, 80, 0, 20)
+NameLabel.Size = UDim2.new(0, 150, 0, 25)
+NameLabel.BackgroundTransparency = 1
+NameLabel.TextColor3 = Color3.new(1,1,1)
+NameLabel.TextScaled = true
+NameLabel.Name = "NameLabel"
+
+-- Eye Button
+local Eye = Instance.new("TextButton", MainFrame)
+Eye.Text = "👁"
+Eye.Size = UDim2.new(0, 30, 0, 30)
+Eye.Position = UDim2.new(0, 80, 0, 45)
+Eye.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Eye.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", Eye)
+
+local hidden = false
+Eye.MouseButton1Click:Connect(function()
+	hidden = not hidden
+	NameLabel.Visible = not hidden
+end)
+
+-- HP Label
+local hpLabel = Instance.new("TextLabel", MainFrame)
+hpLabel.Position = UDim2.new(0, 10, 0, 85)
+hpLabel.Size = UDim2.new(0, 230, 0, 25)
+hpLabel.BackgroundTransparency = 1
+hpLabel.TextColor3 = Color3.new(1,1,1)
+hpLabel.TextScaled = true
+hpLabel.Text = "HP: 0/0"
+
+-- SPEED Label
+local speedLabel = Instance.new("TextLabel", MainFrame)
+speedLabel.Position = UDim2.new(0, 10, 0, 110)
+speedLabel.Size = UDim2.new(0, 230, 0, 25)
+speedLabel.BackgroundTransparency = 1
+speedLabel.TextColor3 = Color3.new(1,1,1)
+speedLabel.TextScaled = true
+speedLabel.Text = "SPEED: 16"
+
+-- Speed Slider
+local SpeedBox = Instance.new("TextBox", MainFrame)
+SpeedBox.PlaceholderText = "Tốc độ (1 - 300)"
+SpeedBox.Text = "16"
+SpeedBox.Size = UDim2.new(0, 230, 0, 25)
+SpeedBox.Position = UDim2.new(0, 10, 0, 140)
+SpeedBox.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+SpeedBox.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", SpeedBox)
+
+SpeedBox.FocusLost:Connect(function()
+	if humanoid and humanoid.Parent then
+		local num = tonumber(SpeedBox.Text)
+		if num and num >= 1 and num <= 300 then
+			humanoid.WalkSpeed = num
+		else
+			SpeedBox.Text = tostring(humanoid.WalkSpeed)
+		end
+	end
+end)
+
+-- Auto update HP and SPEED
+spawn(function()
+	while true do
+		if humanoid and humanoid.Parent then
+			local hp = math.floor(humanoid.Health)
+			local maxHp = math.floor(humanoid.MaxHealth)
+			hpLabel.Text = "HP: "..hp.."/"..maxHp
+			speedLabel.Text = "SPEED: "..tostring(humanoid.WalkSpeed)
+		end
+		wait(0.5)
+	end
+end)
