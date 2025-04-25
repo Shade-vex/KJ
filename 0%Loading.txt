@@ -33,10 +33,10 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 ------ Tab
 
      local Tab1o = MakeTab({Name = "Discord"})
-     local Tab0o = MakeTab({Name = "Player"})
      local Tab2o = MakeTab({Name = "Functions"})
-     local Tab3o = MakeTab({Name = "Vision"})
      local Tab4o = MakeTab({Name = "Teleport"})
+     local Tab0o = MakeTab({Name = "Player"})
+     local Tab3o = MakeTab({Name = "Vision"})
      local Tab5o = MakeTab({Name = "Setting"})
 
 
