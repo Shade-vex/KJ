@@ -87,82 +87,80 @@ AddButton(Tab1o, {
 
 
 
-local Lighting = game:GetService("Lighting")
+local ESPEnabled = false
+local runService = game:GetService("RunService")
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local espEnabled = false
-local addedESP = {}
 
--- Tạo Highlight 7 màu
-local function createRainbowHighlight(target)
-    if not target:FindFirstChild("HumanoidRootPart") then return end
-    if target:FindFirstChild("ESP_Highlight") then return end
+-- Hàm tạo ESP 7 màu
+local function createHighlight(player)
+	if player == Players.LocalPlayer then return end
+	local char = player.Character
+	if not char or not char:FindFirstChild("HumanoidRootPart") then return end
 
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "ESP_Highlight"
-    highlight.FillTransparency = 1
-    highlight.OutlineTransparency = 0
-    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlight.Parent = target
+	if not char:FindFirstChild("ESP_Highlight") then
+		local hl = Instance.new("Highlight")
+		hl.Name = "ESP_Highlight"
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 0
+		hl.Adornee = char
+		hl.Parent = char
 
-    local hue = 0
-    local con
-    con = RunService.RenderStepped:Connect(function()
-        if not espEnabled or not target or not target:FindFirstChild("ESP_Highlight") then
-            if con then con:Disconnect() end
-            return
-        end
-        hue = (hue + 1) % 360
-        local color = Color3.fromHSV(hue / 360, 1, 1)
-        highlight.OutlineColor = color
-    end)
+		-- Rainbow cycle
+		local hue = 0
+		task.spawn(function()
+			while ESPEnabled and hl.Parent == char do
+				hue = (hue + 1) % 360
+				hl.OutlineColor = Color3.fromHSV(hue / 360, 1, 1)
+				task.wait(0.1)
+			end
+			if hl then hl:Destroy() end
+		end)
+	end
 end
 
--- Gắn ESP cho mọi model có Humanoid
-local function attachESP()
-    for _, model in pairs(workspace:GetDescendants()) do
-        if model:IsA("Model") and model:FindFirstChildOfClass("Humanoid") and model:FindFirstChild("HumanoidRootPart") then
-            if not addedESP[model] then
-                addedESP[model] = true
-                createRainbowHighlight(model)
-            end
-        end
-    end
+-- Hàm cập nhật tất cả ESP
+local function updateAllESP()
+	for _, p in pairs(Players:GetPlayers()) do
+		if p ~= Players.LocalPlayer then
+			createHighlight(p)
+		end
+	end
 end
 
--- Theo dõi nhân vật mới và model mới xuất hiện
-local function monitorCharacters()
-    workspace.DescendantAdded:Connect(function(obj)
-        if obj:IsA("Humanoid") and obj.Parent and obj.Parent:IsA("Model") then
-            task.wait(0.1)
-            local model = obj.Parent
-            if model:FindFirstChild("HumanoidRootPart") then
-                if not addedESP[model] then
-                    addedESP[model] = true
-                    createRainbowHighlight(model)
-                end
-            end
-        end
-    end)
+-- Tự động thêm ESP khi người chơi mới vào hoặc respawn
+Players.PlayerAdded:Connect(function(p)
+	p.CharacterAdded:Connect(function()
+		if ESPEnabled then
+			wait(1)
+			createHighlight(p)
+		end
+	end)
+end)
+
+for _, p in pairs(Players:GetPlayers()) do
+	p.CharacterAdded:Connect(function()
+		if ESPEnabled then
+			wait(1)
+			createHighlight(p)
+		end
+	end)
 end
 
--- Giao diện bật/tắt
+-- Nút bật/tắt
 AddButton(Tab0o, {
-    Name = "Player phát sáng",
-    Callback = function()
-        espEnabled = not espEnabled
-        if espEnabled then
-            attachESP()
-            monitorCharacters()
-        else
-            for model, _ in pairs(addedESP) do
-                if model and model:FindFirstChild("ESP_Highlight") then
-                    model:FindFirstChild("ESP_Highlight"):Destroy()
-                end
-            end
-            addedESP = {}
-        end
-    end
+	Name = "Player Glows",
+	Callback = function()
+		ESPEnabled = not ESPEnabled
+		if ESPEnabled then
+			updateAllESP()
+		else
+			for _, p in pairs(Players:GetPlayers()) do
+				if p.Character and p.Character:FindFirstChild("ESP_Highlight") then
+					p.Character.ESP_Highlight:Destroy()
+				end
+			end
+		end
+	end
 })
 
 
