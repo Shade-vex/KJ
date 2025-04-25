@@ -33,7 +33,8 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/Shade-vex/shadevex/r
 ------ Tab
 
      local Tab1o = MakeTab({Name = "Discord"})
-     local Tab2o = MakeTab({Name = "Main Script"})
+     local Tab0o = MakeTab({Name = "Player"})
+     local Tab2o = MakeTab({Name = "Functions"})
      local Tab3o = MakeTab({Name = "Vision"})
      local Tab4o = MakeTab({Name = "Teleport"})
      local Tab5o = MakeTab({Name = "Setting"})
@@ -68,10 +69,192 @@ AddButton(Tab1o, {
    Section = AddSection(Tab1o, {"Script creator"})          
    Section = AddSection(Tab1o, {"• YanghoVN"})          
    Section = AddSection(Tab1o, {"• Kzu123"})          
-   Section = AddSection(Tab1o, {"• RimuruHRB"})          
+   Section = AddSection(Tab1o, {"• RimuruHRB"})         
 
 
-   Section = AddSection(Tab2o, {"Script [PRO]"})
+
+
+   Section = AddSection(Tab0o, {"Player"})
+
+
+
+
+AddButton(Tab0o, {
+    Name = "Coercion Weld",
+    Callback = function()
+        -- Chạy script từ link
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/weld.lua.txt"))()
+
+        -- Hook SetCore để chặn thông báo khác
+        local originalSetCore = game:GetService("StarterGui").SetCore
+        local blocked = {"SendNotification"}
+
+        hookfunction(originalSetCore, function(self, method, ...)
+            if table.find(blocked, method) then
+                return -- chặn không cho hiển thị
+            end
+            return originalSetCore(self, method, ...)
+        end)
+    end
+})
+
+
+
+
+
+
+
+
+
+
+AddButton(Tab0o, {
+    Name = "Fly Bypass-Max",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/Script/refs/heads/main/test-fly.txt"))()
+
+        -- Thông báo chính
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Loading 1%",
+            Text = "^v^",
+            Duration = 3
+        })
+
+        -- Thông báo phụ 1
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Loading 50%",
+            Text = ":3",
+            Duration = 3
+        })
+
+        -- Thông báo phụ 2
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Loading 100%",
+            Text = "Thank for ON script :>",
+            Duration = 3
+        })
+    end
+})
+
+
+
+
+
+
+       AddButton(Tab0o, {
+     Name = "Indicators",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/GG.txt"))()
+  end
+  })   
+
+
+
+
+
+--// Nút Bật Tọa Độ
+local coordGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+coordGui.Name = "CoordDisplay"
+coordGui.Enabled = false
+
+local label = Instance.new("TextLabel", coordGui)
+label.Size = UDim2.new(0, 300, 0, 50)
+label.Position = UDim2.new(0, 10, 0, 10)
+label.BackgroundTransparency = 0.3
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSansBold
+label.Text = "Tọa độ: Đang tải..."
+
+RunService.RenderStepped:Connect(function()
+    if coordGui.Enabled then
+        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local pos = hrp.Position
+            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
+        end
+    end
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    coordGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end)
+
+AddButton(Tab0o, {
+    Name = "Coordinates",
+    Callback = function()
+        isCoordVisible = not isCoordVisible
+        coordGui.Enabled = isCoordVisible
+        Notify("Toạ độ", isCoordVisible and "Đã bật hiển thị tọa độ." or "Đã tắt hiển thị tọa độ.")
+    end
+})
+
+
+
+
+
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local enabled = false
+local particles = {}
+
+function createSmoke(part)
+	local smoke = Instance.new("ParticleEmitter")
+	smoke.Name = "DarkAura"
+	smoke.Texture = "rbxassetid://771221224" -- Khí đen
+	smoke.Color = ColorSequence.new(Color3.new(0,0,0))
+	smoke.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 2), NumberSequenceKeypoint.new(1, 0)})
+	smoke.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1)})
+	smoke.Lifetime = NumberRange.new(1)
+	smoke.Rate = 50
+	smoke.Speed = NumberRange.new(1, 3)
+	smoke.Rotation = NumberRange.new(0, 360)
+	smoke.RotSpeed = NumberRange.new(-180, 180)
+	smoke.VelocitySpread = 180
+	smoke.Parent = part
+	table.insert(particles, smoke)
+end
+
+function toggleAura()
+	enabled = not enabled
+
+	if enabled then
+		for _, part in pairs(char:GetDescendants()) do
+			if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+				createSmoke(part)
+			end
+		end
+	else
+		for _, p in ipairs(particles) do
+			if p and p.Parent then p:Destroy() end
+		end
+		particles = {}
+	end
+end
+
+AddButton(Tab0o, {
+	Name = "Dark Aura",
+	Callback = function()
+		toggleAura()
+	end
+})
+
+
+
+
+
+
+       AddButton(Tab0o, {
+     Name = "Aura for player",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0Happy.txt"))()
+  end
+  })   
+
+
+
+   Section = AddSection(Tab2o, {"Functions"})
 
        AddButton(Tab2o, {
      Name = "Bypass Anti-cheat",
@@ -134,7 +317,7 @@ end
 
 -- Thêm nút bật/tắt vào menu
 AddButton(Tab2o, {
-    Name = "Auto Attack (melee)",
+    Name = "Melle Attack",
     Callback = function()
         toggleAutoAttack()
     end
@@ -145,8 +328,10 @@ AddButton(Tab2o, {
 
 
 
+
+
 AddButton(Tab2o, {
-    Name = "Gun Aura [Pro]",
+    Name = "Gun Aura",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Gun_Aura_Open_Source.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -161,33 +346,13 @@ AddButton(Tab2o, {
 
 
 
-AddButton(Tab2o, {
-    Name = "Fly [no encryption]",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/Script/refs/heads/main/test-fly.txt"))()
 
-        -- Thông báo chính
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Script Fly [ON]",
-            Text = "Script by Dark-Web",
-            Duration = 3
-        })
 
-        -- Thông báo phụ 1
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Fly [no encryption]",
-            Text = "Dark-Web: Welcome 😈",
-            Duration = 3
-        })
 
-        -- Thông báo phụ 2
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Fly by King cheats",
-            Text = "Dark-Web: Are you ready ?",
-            Duration = 3
-        })
-    end
-})
+
+
+
+
 
 
 
@@ -242,7 +407,7 @@ local function disableUnlockCamera()
 end
 
 AddButton(Tab2o, {
-    Name = "Unlock Camera [Fix-Bug]",
+    Name = "Unlock Camera",
     Callback = function()
         cameraUnlocked = not cameraUnlocked
         if cameraUnlocked then
@@ -382,106 +547,6 @@ AddButton(Tab2o, {
 
 
 
---// Nút Bật Tọa Độ
-local coordGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-coordGui.Name = "CoordDisplay"
-coordGui.Enabled = false
-
-local label = Instance.new("TextLabel", coordGui)
-label.Size = UDim2.new(0, 300, 0, 50)
-label.Position = UDim2.new(0, 10, 0, 10)
-label.BackgroundTransparency = 0.3
-label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-label.TextColor3 = Color3.fromRGB(255, 255, 255)
-label.TextScaled = true
-label.Font = Enum.Font.SourceSansBold
-label.Text = "Tọa độ: Đang tải..."
-
-RunService.RenderStepped:Connect(function()
-    if coordGui.Enabled then
-        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            local pos = hrp.Position
-            label.Text = string.format("Tọa độ: X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
-        end
-    end
-end)
-
-LocalPlayer.CharacterAdded:Connect(function()
-    coordGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-end)
-
-AddButton(Tab2o, {
-    Name = "Coordinates",
-    Callback = function()
-        isCoordVisible = not isCoordVisible
-        coordGui.Enabled = isCoordVisible
-        Notify("Toạ độ", isCoordVisible and "Đã bật hiển thị tọa độ." or "Đã tắt hiển thị tọa độ.")
-    end
-})
-
-
-
-
-
-local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local enabled = false
-local particles = {}
-
-function createSmoke(part)
-	local smoke = Instance.new("ParticleEmitter")
-	smoke.Name = "DarkAura"
-	smoke.Texture = "rbxassetid://771221224" -- Khí đen
-	smoke.Color = ColorSequence.new(Color3.new(0,0,0))
-	smoke.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 2), NumberSequenceKeypoint.new(1, 0)})
-	smoke.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1)})
-	smoke.Lifetime = NumberRange.new(1)
-	smoke.Rate = 50
-	smoke.Speed = NumberRange.new(1, 3)
-	smoke.Rotation = NumberRange.new(0, 360)
-	smoke.RotSpeed = NumberRange.new(-180, 180)
-	smoke.VelocitySpread = 180
-	smoke.Parent = part
-	table.insert(particles, smoke)
-end
-
-function toggleAura()
-	enabled = not enabled
-
-	if enabled then
-		for _, part in pairs(char:GetDescendants()) do
-			if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-				createSmoke(part)
-			end
-		end
-	else
-		for _, p in ipairs(particles) do
-			if p and p.Parent then p:Destroy() end
-		end
-		particles = {}
-	end
-end
-
-AddButton(Tab2o, {
-	Name = "Dark Aura",
-	Callback = function()
-		toggleAura()
-	end
-})
-
-
-
-
-
-
-       AddButton(Tab2o, {
-     Name = "Aura for player",
-    Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/0Happy.txt"))()
-  end
-  })   
 
 
 
@@ -1458,12 +1523,24 @@ AddButton(Tab4o, {
 
 
 
-       AddButton(Tab4o, {
-     Name = "TP to Sterling",
+AddButton(Tab4o, {
+    Name = "TP to Sterling",
     Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPsterling.txt"))()
-  end
-  })   
+        -- Chạy script từ link
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPsterling.txt"))()
+
+        -- Hook SetCore để chặn thông báo khác
+        local originalSetCore = game:GetService("StarterGui").SetCore
+        local blocked = {"SendNotification"}
+
+        hookfunction(originalSetCore, function(self, method, ...)
+            if table.find(blocked, method) then
+                return -- chặn không cho hiển thị
+            end
+            return originalSetCore(self, method, ...)
+        end)
+    end
+})
 
 
 
