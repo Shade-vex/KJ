@@ -196,7 +196,7 @@ AddButton(Tab0o, {
 
 
        AddButton(Tab0o, {
-     Name = "AimNPC",
+     Name = "AimNPC Cammera",
     Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Dead-Rails-Aimlock-NPC.txt"))()
   end
@@ -230,7 +230,55 @@ AddButton(Tab0o, {
 
 
 
+local holdKeyActive = false
+local holdLoop
 
+-- Hàm giữ phím E
+local function startHoldingE()
+    local VirtualInputManager = game:GetService("VirtualInputManager")
+    holdLoop = task.spawn(function()
+        while holdKeyActive do
+            -- Nhấn giữ phím E trong 5 giây
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+            task.wait(5)
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+            -- Nghỉ 1 giây
+            task.wait(1)
+        end
+    end)
+end
+
+-- Hàm dừng giữ phím
+local function stopHoldingE()
+    holdKeyActive = false
+    if holdLoop then
+        task.cancel(holdLoop)
+        holdLoop = nil
+    end
+end
+
+-- Nút bật/tắt trong GUI
+AddButton(Tab0o, {
+    Name = "Hold E Loop",
+    Callback = function()
+        holdKeyActive = not holdKeyActive
+        if holdKeyActive then
+            startHoldingE()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Hold E ON",
+                Text = "Make by SLK gaming",
+                Duration = 3
+            })
+        else
+            stopHoldingE()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Hold E OFF",
+                Text = "Make by SLK gaming",
+                Duration = 3
+            })
+        end
+    end
+})
 
 
 
@@ -253,6 +301,60 @@ AddButton(Tab0o, {
 
 
    Section = AddSection(Tab2o, {"Functions"})
+
+
+
+
+-- Khởi tạo trạng thái và kết nối
+local antiVoidActive = false
+local antiVoidConnection
+
+-- Logic Anti-Void
+local function startAntiVoid()
+    if antiVoidConnection then return end
+    antiVoidConnection = game:GetService("RunService").Stepped:Connect(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local rootPart = player.Character.HumanoidRootPart
+            if rootPart.Position.Y < -1 then
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
+            end
+        end
+    end)
+end
+
+local function stopAntiVoid()
+    if antiVoidConnection then
+        antiVoidConnection:Disconnect()
+        antiVoidConnection = nil
+    end
+end
+
+-- Thêm nút vào Tab2o
+AddButton(Tab2o, {
+    Name = "Anti Void",
+    Callback = function()
+        antiVoidActive = not antiVoidActive
+        if antiVoidActive then
+            startAntiVoid()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Anti Void ON",
+                Text = "Make by SLK gaming",
+                Duration = 3
+            })
+        else
+            stopAntiVoid()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Anti Void OFF",
+                Text = "Make by SLK gaming",
+                Duration = 3
+            })
+        end
+    end
+})
+
+
+
+
 
 
 
@@ -813,9 +915,19 @@ AddButton(Tab3o, {
 
 
 
+
+
+
+
+
+
+
+
+
 local espEnabled = false
 local espObjects = {}
 local allowedNames = {
+    ["Wolf"] = true,
     ["Vampire"] = true,
     ["Model_RifleOutlaw"] = true,
     ["Model_ShotgunOutlaw"] = true,
@@ -823,89 +935,6 @@ local allowedNames = {
     ["Model_Walker"] = true,
     ["Model_Runner"] = true,
     ["Werewolf"] = true
-}
-
-local function createESP(target)
-    local adornee = target:IsA("Model") and target:FindFirstChildWhichIsA("BasePart") or target
-    if not adornee then return end
-
-    local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = adornee
-    billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 3, 0)
-    billboard.AlwaysOnTop = true
-
-    local label = Instance.new("TextLabel", billboard)
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ
-    label.TextStrokeTransparency = 1 -- Không viền
-    label.TextSize = 18
-    label.Font = Enum.Font.SourceSansBold
-    label.Text = target.Name
-
-    billboard.Parent = game.CoreGui
-    table.insert(espObjects, billboard)
-
-    spawn(function()
-        while espEnabled and adornee and adornee.Parent do
-            local char = game.Players.LocalPlayer.Character
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                local dist = (char.HumanoidRootPart.Position - adornee.Position).Magnitude
-                label.Text = string.format("%s | %dm", target.Name, math.floor(dist))
-            end
-            wait(0.2)
-        end
-        billboard:Destroy()
-    end)
-end
-
-local function toggleNPCEsp()
-    espEnabled = not espEnabled
-
-    if espEnabled then
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
-                createESP(obj)
-            end
-        end
-
-        workspace.DescendantAdded:Connect(function(obj)
-            if espEnabled and (obj:IsA("BasePart") or obj:IsA("Model")) and allowedNames[obj.Name] then
-                createESP(obj)
-            end
-        end)
-    else
-        for _, gui in pairs(espObjects) do
-            if gui and gui.Parent then
-                gui:Destroy()
-            end
-        end
-        espObjects = {}
-    end
-end
-
--- Nút bật/tắt
-AddButton(Tab3o, {
-    Name = "ESP Monster (NPC)",
-    Callback = function()
-        toggleNPCEsp()
-    end
-})                      
-
-
-
-
-
-
-
-
-
-
-local espEnabled = false
-local espObjects = {}
-local allowedNames = {
-    ["Wolf"] = true
 }
 
 local function createESP(target)
@@ -970,7 +999,7 @@ end
 
 -- Nút bật/tắt
 AddButton(Tab3o, {
-    Name = "ESP Wolf",
+    Name = "ESP Monter",
     Callback = function()
         toggleWolfEsp()
     end
@@ -1374,7 +1403,7 @@ AddButton(Tab4o, {
 
 
 AddButton(Tab4o, {
-    Name = "TP to You Train",
+    Name = "TP to Train",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -1421,7 +1450,7 @@ AddButton(Tab4o, {
 
 
 AddButton(Tab4o, {
-    Name = "TP to Fort",
+    Name = "TP to Fort Zombie",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Tpfort.lua.txt"))()
         game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -1486,17 +1515,7 @@ AddButton(Tab4o, {
 
 
 
-   AddButton(Tab4o, {
-    Name = "TP to Unicorn",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Test.lua.txt"))()
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "TP to Unicorn",
-            Text = "Script by YanghoVN",
-            Duration = 3
-        })
-    end
-})
+
 
 
 
@@ -1505,8 +1524,9 @@ AddButton(Tab4o, {
    Section = AddSection(Tab5o, {"Chức Năng Script "})
    Section = AddSection(Tab5o, {"• Bypass Anti-Cheat"})
    Section = AddSection(Tab5o, {"• Anti-Banned"})
-   Section = AddSection(Tab5o, {"• Bypass All Script"})
-   Section = AddSection(Tab5o, {"• Fix Bug Script"})
+   Section = AddSection(Tab5o, {"• Auto Kick Admin"})
+
+
 
 
 
