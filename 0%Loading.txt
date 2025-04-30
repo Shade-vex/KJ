@@ -195,6 +195,17 @@ AddButton(Tab0o, {
 
 
 
+       AddButton(Tab0o, {
+     Name = "AimNPC",
+    Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Dead-Rails-Aimlock-NPC.txt"))()
+  end
+  })   
+
+
+
+
+
 AddButton(Tab0o, {
     Name = "Coercion Weld",
     Callback = function()
