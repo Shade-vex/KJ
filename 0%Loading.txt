@@ -308,20 +308,22 @@ AddButton(Tab0o, {
 -- Khởi tạo trạng thái và kết nối
 local antiVoidActive = false
 local antiVoidConnection
+local player = game:GetService("Players").LocalPlayer
 
--- Logic Anti-Void
+-- Logic Anti-Void cho Dead Rails
 local function startAntiVoid()
     if antiVoidConnection then return end
     antiVoidConnection = game:GetService("RunService").Stepped:Connect(function()
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local rootPart = player.Character.HumanoidRootPart
-            if rootPart.Position.Y < -1 then
+            if rootPart.Position.Y <= 1 then -- Dead Rails: Y <= 2 là rơi xuống vực
                 loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
             end
         end
     end)
 end
 
+-- Ngưng Anti-Void
 local function stopAntiVoid()
     if antiVoidConnection then
         antiVoidConnection:Disconnect()
@@ -329,7 +331,7 @@ local function stopAntiVoid()
     end
 end
 
--- Thêm nút vào Tab2o
+-- Thêm nút Anti Void vào Tab2o
 AddButton(Tab2o, {
     Name = "Anti Void",
     Callback = function()
